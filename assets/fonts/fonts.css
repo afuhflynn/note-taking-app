@@ -1,0 +1,59 @@
+@font-face {
+    font-family: "SourceCodePro-Bold";
+    src: url("./source-code-pro/static/SourceCodePro-Bold.ttf");
+}
+
+@font-face {
+    font-family: "SourceCodePro-Medium";
+    src: url("./source-code-pro/static/SourceCodePro-Medium.ttf");
+}
+
+@font-face {
+    font-family: "SourceCodePro-Regular";
+    src: url("./source-code-pro/static/SourceCodePro-Regular.ttf");
+}
+
+@font-face {
+    font-family: "SourceCodePro-SemiBold";
+    src: url("./source-code-pro/static/SourceCodePro-SemiBold.ttf");
+}
+
+@font-face {
+    font-family: "NotoSerif-Bold";
+    src: url("./noto-serif/static/NotoSerif-Bold.ttf");
+}
+
+@font-face {
+    font-family: "NotoSerif-Medium";
+    src: url("./noto-serif/static/NotoSerif-Medium.ttf");
+}
+
+@font-face {
+    font-family: "NotoSerif-Regular";
+    src: url("./noto-serif/static/NotoSerif-Regular.ttf");
+}
+
+@font-face {
+    font-family: "NotoSerif-SemiBold";
+    src: url("./noto-serif/static/NotoSerif-SemiBold.ttf");
+}
+
+@font-face {
+    font-family: "Inter_18pt-Bold";
+    src: url("./inter/static/Inter_18pt-Bold.ttf");
+}
+
+@font-face {
+    font-family: "Inter_18pt-Medium";
+    src: url("./inter/static/Inter_18pt-Medium.ttf");
+}
+
+@font-face {
+    font-family: "Inter_18pt-Regular";
+    src: url("./inter/static/Inter_18pt-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Inter_18pt-SemiBold";
+    src: url("./inter/static/Inter_18pt-SemiBold.ttf");
+}

@@ -1,0 +1,423 @@
+@import url("../assets/fonts/fonts.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Font variables */
+    --font-sans: system-ui, sans-serif;
+    --font-mono: ui-monospace, monospace;
+
+    /* Font sizes */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 24px;
+
+    /* Line heights */
+    --line-height-xs: 120%;
+    --line-height-sm: 120%;
+    --line-height-base: 120%;
+    --line-height-lg: 120%;
+    --line-height-xl: 120%;
+    --line-height-2xl: 120%;
+
+    /* Letter spacing */
+    --letter-spacing-xs: -0.2px;
+    --letter-spacing-sm: -0.3px;
+    --letter-spacing-base: -0.3px;
+    --letter-spacing-lg: -0.3px;
+    --letter-spacing-xl: -0.5px;
+    --letter-spacing-2xl: -0.5px;
+
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius: 6px;
+
+    /* Shadows */
+    --shadow-sm: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+    --shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-inner: inset 0px 2px 4px 0px rgba(0, 0, 0, 0.06);
+
+    /* Base colors - Light Mode */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    /* Card colors - Light Mode */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    /* Popover colors - Light Mode */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Primary colors - Light Mode (using blue) */
+    --primary: 228 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary colors - Light Mode */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    /* Muted colors - Light Mode */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    /* Accent colors - Light Mode */
+    --accent: 220 14% 96%;
+    --accent-foreground: 222 47% 11%;
+
+    /* Destructive colors - Light Mode */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* Border and input colors - Light Mode */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 228 100% 60%;
+
+    /* Status colors - Light Mode */
+    --success: 142 72% 29%;
+    --success-foreground: 210 20% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 20% 98%;
+    --info: 217 91% 60%;
+    --info-foreground: 210 20% 98%;
+
+    /* Neutral colors from design system - Light Mode */
+    --neutral-950: 222 32% 8%;
+    --neutral-900: 230 19% 12%;
+    --neutral-800: 231 16% 16%;
+    --neutral-700: 221 16% 20%;
+    --neutral-600: 222 11% 36%;
+    --neutral-500: 221 8% 48%;
+    --neutral-400: 220 11% 64%;
+    --neutral-300: 219 15% 82%;
+    --neutral-200: 216 19% 90%;
+    --neutral-100: 216 20% 96%;
+    --neutral-50: 216 33% 97%;
+    --neutral-0: 0 0% 100%;
+
+    /* Blue colors from design system - Light Mode */
+    --blue-700: 228 70% 48%;
+    --blue-500: 228 100% 60%;
+    --blue-50: 222 100% 96%;
+
+    /* Green colors from design system - Light Mode */
+    --green-500: 148 71% 44%;
+    --green-100: 154 84% 90%;
+
+    /* Red colors from design system - Light Mode */
+    --red-500: 355 96% 60%;
+    --red-100: 356 100% 92%;
+  }
+
+  .dark {
+    /* Base colors - Dark Mode */
+    --background: 222 47% 11%;
+    --foreground: 210 20% 98%;
+
+    /* Card colors - Dark Mode */
+    --card: 222 47% 11%;
+    --card-foreground: 210 20% 98%;
+
+    /* Popover colors - Dark Mode */
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 20% 98%;
+
+    /* Primary colors - Dark Mode (using blue) */
+    --primary: 228 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary colors - Dark Mode */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 20% 98%;
+
+    /* Muted colors - Dark Mode */
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent colors - Dark Mode */
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 20% 98%;
+
+    /* Destructive colors - Dark Mode */
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* Border and input colors - Dark Mode */
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 228 100% 60%;
+
+    /* Status colors - Dark Mode */
+    --success: 142 72% 29%;
+    --success-foreground: 210 20% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 20% 98%;
+    --info: 217 91% 60%;
+    --info-foreground: 210 20% 98%;
+
+    /* Neutral colors from design system - Dark Mode */
+    --neutral-950: 222 32% 8%;
+    --neutral-900: 230 19% 12%;
+    --neutral-800: 231 16% 16%;
+    --neutral-700: 221 16% 20%;
+    --neutral-600: 222 11% 36%;
+    --neutral-500: 221 8% 48%;
+    --neutral-400: 220 11% 64%;
+    --neutral-300: 219 15% 82%;
+    --neutral-200: 216 19% 90%;
+    --neutral-100: 216 20% 96%;
+    --neutral-50: 216 33% 97%;
+    --neutral-0: 0 0% 100%;
+
+    /* Blue colors from design system - Dark Mode */
+    --blue-700: 228 70% 48%;
+    --blue-500: 228 100% 60%;
+    --blue-50: 222 100% 96%;
+
+    /* Green colors from design system - Dark Mode */
+    --green-500: 148 71% 44%;
+    --green-100: 154 84% 90%;
+
+    /* Red colors from design system - Dark Mode */
+    --red-500: 355 96% 60%;
+    --red-100: 356 100% 92%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border font-inter-18pt-regular;
+  }
+
+  body {
+    @apply text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
+  h4 {
+    @apply text-base;
+  }
+
+  h5,
+  h6 {
+    @apply text-sm;
+  }
+}
+
+@layer components {
+
+  /* Button styles */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-link {
+    @apply underline-offset-4 hover:underline text-primary;
+  }
+
+  /* Button sizes */
+  .btn-sm {
+    @apply h-8 px-3 rounded-md;
+  }
+
+  .btn-default {
+    @apply h-10 px-4 py-2;
+  }
+
+  .btn-lg {
+    @apply h-11 px-8 rounded-md;
+  }
+
+  .btn-icon {
+    @apply h-10 w-10;
+  }
+
+  /* Input styles */
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .card-content {
+    @apply p-6 pt-0;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  /* Modal styles */
+  .modal {
+    @apply fixed inset-0 z-50 bg-black/80 flex items-center justify-center;
+  }
+
+  .modal-content {
+    @apply bg-background p-6 rounded-lg shadow-lg max-w-md w-full max-h-[85vh] overflow-auto;
+  }
+
+  .modal-header {
+    @apply flex flex-col space-y-1.5 mb-4;
+  }
+
+  .modal-title {
+    @apply text-lg font-semibold;
+  }
+
+  .modal-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .modal-footer {
+    @apply flex justify-end space-x-2 mt-6;
+  }
+
+  /* Toast styles */
+  .toast {
+    @apply fixed right-4 bottom-4 z-50 flex max-w-md items-center space-x-4 rounded-md border p-4 shadow-md;
+  }
+
+  .toast-success {
+    @apply border-success bg-success/10 text-success;
+  }
+
+  .toast-error {
+    @apply border-destructive bg-destructive/10 text-destructive;
+  }
+
+  .toast-warning {
+    @apply border-warning bg-warning/10 text-warning;
+  }
+
+  .toast-info {
+    @apply border-info bg-info/10 text-info;
+  }
+
+  /* Menu bar styles */
+  .menu-bar {
+    @apply flex items-center justify-between p-2 bg-background border-b;
+  }
+
+  .menu-item {
+    @apply flex flex-col items-center justify-center p-2 rounded-md hover:bg-accent;
+  }
+
+  /* Sidebar styles */
+  .sidebar {
+    @apply w-64 h-full bg-background border-r p-4;
+  }
+
+  .sidebar-item {
+    @apply flex items-center space-x-2 p-2 rounded-md hover:bg-accent cursor-pointer;
+  }
+
+  .sidebar-item-active {
+    @apply bg-accent text-accent-foreground;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Letter spacing utilities based on design system */
+  .tracking-tighter {
+    letter-spacing: -0.5px;
+  }
+
+  .tracking-tight {
+    letter-spacing: -0.3px;
+  }
+
+  .tracking-normal {
+    letter-spacing: -0.2px;
+  }
+
+  /* Line height utilities */
+  .leading-tight {
+    line-height: 120%;
+  }
+
+  .leading-normal {
+    line-height: 140%;
+  }
+
+  .leading-relaxed {
+    line-height: 160%;
+  }
+
+  .auth-container {
+    @apply min-h-screen w-full md:px-0 flex items-center justify-center bg-neutral-50 dark:bg-neutral-600;
+  }
+
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    @apply hidden;
+  }
+}
