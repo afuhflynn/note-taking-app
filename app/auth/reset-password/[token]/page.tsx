@@ -1,19 +1,33 @@
 "use client";
 
-import { useState } from "react";
 import { AuthWrapper } from "@/components/auth/auth-wrapper";
 import { AuthInput } from "@/components/auth/input";
 import { AuthButton } from "@/components/auth/button";
 import Image from "next/image";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { resetPasswordSchema } from "@/zod/zod.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ResetPasswordPage() {
-  const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: "",
+  const form = useForm({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
   });
 
-  const handleInputChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
+  const onSubmit = (values: any) => {
+    // Handle form submission
+    console.log(values);
   };
 
   return (
@@ -22,43 +36,56 @@ export default function ResetPasswordPage() {
         title="Reset Your Password"
         description="Choose a new password to secure your account."
       >
-        <form className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              New Password
-            </label>
-            <AuthInput
-              value={formData.password}
-              onChange={handleInputChange}
-              type="password"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
               name="password"
-              isPassword
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="password" className="text-sm font-medium">
+                    New Password
+                  </FormLabel>
+                  <FormControl>
+                    <AuthInput type="password" isPassword {...field} />
+                  </FormControl>
+                  <FormMessage />
+                  <div className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto">
+                    <Image
+                      src="/icons/info circle.svg"
+                      alt="Info icon"
+                      width={24}
+                      height={24}
+                      className="w-auto h-auto dark:invert"
+                    />{" "}
+                    <span>At least 8 characters</span>
+                  </div>
+                </FormItem>
+              )}
             />
-            <div className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto">
-              <Image
-                src="/icons/info circle.svg"
-                alt="Info icon"
-                width={24}
-                height={24}
-                className="w-auto h-auto dark:invert"
-              />{" "}
-              <span>At least 8 characters</span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm New Password
-            </label>
-            <AuthInput
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              type="password"
-              name="confirmPassword"
-              isPassword
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className="text-sm font-medium"
+                    htmlFor="confirmPassword"
+                  >
+                    Confirm New Password
+                  </FormLabel>
+
+                  <FormControl>
+                    <AuthInput type="password" isPassword {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <AuthButton title="Reset Password" type="submit" />
-        </form>
+            {/* Repeat FormField for email, password, and confirmPassword */}
+            <AuthButton title="Reset Password" type="submit" />
+          </form>
+        </Form>
       </AuthWrapper>
     </div>
   );

@@ -1,0 +1,31 @@
+"use client";
+
+import { MainLoader } from "@/components/main-loader";
+import { NotesWrapper } from "@/components/notes/notes-wrapper";
+import { useUserStore } from "@/store/user.store";
+// import { redirect } from "next/navigation";
+import { useEffect } from "react";
+
+export default function NotesPage() {
+  const { getUserProfile, user, isGettingUserProfile } = useUserStore();
+  useEffect(() => {
+    getUserProfile();
+  }, []);
+
+  // Redirect if a valid user object exists
+  useEffect(() => {
+    if (!user) {
+      // redirect("/auth/sign-in");
+    }
+  }, []);
+
+  if (isGettingUserProfile) {
+    return <MainLoader />;
+  }
+
+  return (
+    <div className="w-screen h-screen overflow-hidden bg-background">
+      <NotesWrapper />
+    </div>
+  );
+}

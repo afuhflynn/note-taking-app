@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
 import { AuthWrapper } from "@/components/auth/auth-wrapper";
 import { AuthInput } from "@/components/auth/input";
 import { AuthButton } from "@/components/auth/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { resendVerificationEmailSchema } from "@/zod/zod.schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ResendVerificationEmailPage() {
-  const [formData, setFormData] = useState({
-    email: "",
+  const form = useForm({
+    resolver: zodResolver(resendVerificationEmailSchema),
+    defaultValues: {
+      email: "",
+    },
   });
 
-  const handleInputChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
+  const onSubmit = (values: any) => {
+    // Handle form submission
+    console.log(values);
   };
 
   return (
@@ -20,21 +34,30 @@ export default function ResendVerificationEmailPage() {
         title="Did't receive a verification email"
         description="Enter your email below to receive another email."
       >
-        <form className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email Address
-            </label>
-            <AuthInput
-              value={formData.email}
-              onChange={handleInputChange}
-              type="email"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
               name="email"
-              placeholder="email@example.com"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium" htmlFor="email">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <AuthInput
+                      type="email"
+                      placeholder="email@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <AuthButton title="Resend Email" type="submit" />
-        </form>
+            <AuthButton title="Resend Email" type="submit" />
+          </form>
+        </Form>
       </AuthWrapper>
     </div>
   );

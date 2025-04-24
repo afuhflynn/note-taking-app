@@ -1,15 +1,19 @@
 import { compare } from "bcryptjs";
-import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
 import { signInSchema } from "@/zod/zod.schema";
+import NextAuth from "next-auth";
+import authConfig from "./auth.config";
+import { v4 as uuid } from "uuid";
 
-export const { auth, handlers, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+import { CustomPrismaAdapter } from "@/lib/custom-prisma-adapter";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: CustomPrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  ...authConfig,
   providers: [
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -23,6 +27,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           image: profile.avatar_url,
           bio: profile.bio,
           updatedAt: new Date(Date.now()),
+          emailVerified: new Date(Date.now()),
         };
       },
     }),
@@ -79,68 +84,4 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    async signIn({ profile }) {
-      // Check if user does not exist in db if using github
-      // A profile was passed on, then github or google was used
-      if (profile) {
-        const email = profile.email;
-        const userExists = await prisma.user.findUnique({
-          where: {
-            email: email as string,
-          },
-        });
-
-        // Update user email verification date and updated at status if they exist
-        if (userExists) {
-          userExists.emailVerified = new Date(Date.now());
-          userExists.updatedAt = new Date(Date.now());
-
-          const updatedUser = await prisma.user.update({
-            where: {
-              email: email as string,
-            },
-            data: userExists,
-          });
-
-          return {
-            ...updatedUser,
-            password: undefined, /// Hide user password on return
-          };
-        }
-
-        const newUser: User = {
-          image: profile.avatar_url as string,
-          bio: profile.bio as string,
-          name: profile.name as string,
-          username: profile.preferred_username as string,
-          email: email as string,
-          emailVerified: new Date(Date.now()),
-          updatedAt: new Date(Date.now()),
-          createdAt: new Date(Date.now()),
-        };
-
-        // Create new user db record
-        const user = await prisma.user.create({
-          data: newUser,
-        });
-
-        await prisma.account.create({
-          data: {
-            userId: user.id,
-            type: "github",
-            provider: "github",
-            providerAccountId: profile.id as string,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-          },
-        });
-
-        return {
-          ...user,
-          password: undefined, /// Hide user password on return
-        };
-      }
-    },
-  },
 });

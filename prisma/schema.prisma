@@ -11,19 +11,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum
+enum PrefersTheme {
+  system
+  light
+  dark
+}
+
 model User {
-  id                          String    @id @default(auto()) @map("_id") @db.ObjectId
-  name                        String?
-  username                    String?
-  email                       String?   @unique
-  password                    String?
-  passwordResetToken          String?
-  passwordResetTokenExpiresAt DateTime?
-  emailVerified               DateTime?
-  image                       String?
-  bio                         String?
-  createdAt                   DateTime  @default(now())
-  updatedAt                   DateTime  @updatedAt
+  id                              String        @id @default(auto()) @map("_id") @db.ObjectId
+  name                            String?
+  username                        String?
+  email                           String?       @unique
+  password                        String?
+  passwordResetToken              String?
+  passwordResetTokenExpiresAt     DateTime?
+  emailVerificationCode           String?
+  emailVerificationCodeExpiresAt  DateTime?
+  emailVerificationToken          String?
+  emailVerificationTokenExpiresAt DateTime?
+  emailVerified                   DateTime?
+  image                           String?
+  bio                             String?
+  prefersTheme                    PrefersTheme?
+  createdAt                       DateTime      @default(now())
+  updatedAt                       DateTime      @updatedAt
 
   // Relationships
   accounts      Account[]

@@ -1,12 +1,12 @@
 "use client";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface InputProps {
   type: string;
   isPassword?: boolean;
-  onChange: (name: string, value: string) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   value: string;
   className?: string;
   isLoading?: boolean;
@@ -39,11 +39,8 @@ export function AuthInput({
           type={showPassword ? "text" : "password"}
           value={value}
           placeholder={placeholder}
-          onChange={(e) =>
-            !isLoading && onChange(e.target.name, e.target.value)
-          }
+          onChange={(e) => !isLoading && onChange(e)}
           disabled={disabled}
-          required
           className={`${className} bg-transparent w-full pr-10 rounded-xl cursor-pointer`}
         />
         {isPassword && isPassword && (
@@ -71,11 +68,8 @@ export function AuthInput({
           type={type}
           value={value}
           placeholder={placeholder}
-          onChange={(e) =>
-            !isLoading && onChange(e.target.name, e.target.value)
-          }
+          onChange={(e) => !isLoading && onChange(e)}
           disabled={disabled}
-          required
           className={`${className} bg-transparent w-full rounded-xl cursor-pointer`}
         />
       </div>

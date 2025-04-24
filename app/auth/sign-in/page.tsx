@@ -1,19 +1,38 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { AuthWrapper } from "@/components/auth/auth-wrapper";
 import { AuthInput } from "@/components/auth/input";
 import { AuthButton } from "@/components/auth/button";
+import { useForm } from "react-hook-form";
+import { signInSchema } from "@/zod/zod.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { credentialsSignInAction } from "@/actions/credentials-signin";
+
+type SignInData = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const form = useForm<SignInData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
-  const handleInputChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
+  const onSubmit = async (values: SignInData) => {
+    // Handle form submission
+    await credentialsSignInAction(values);
+    console.log(values);
   };
 
   // TODO: Redirect the users to previous route after login if the route is not home page or any auth page.
@@ -26,39 +45,58 @@ export default function SignInPage() {
         showAuthButton
         isSignIn
       >
-        <form className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email Address
-            </label>
-            <AuthInput
-              value={formData.email}
-              onChange={handleInputChange}
-              type="email"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
               name="email"
-              placeholder="email@example.com"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium" htmlFor="email">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <AuthInput
+                      type="email"
+                      placeholder="email@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Link href="/auth/forgot-password" className="text-xs underline">
-                Forgot
-              </Link>
-            </div>
-            <AuthInput
-              value={formData.password}
-              onChange={handleInputChange}
-              type="password"
+            <FormField
+              control={form.control}
               name="password"
-              isPassword
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel
+                      className="text-sm font-medium"
+                      htmlFor="password"
+                    >
+                      Password
+                    </FormLabel>
+                    <Link
+                      href="/auth/forgot-password"
+                      className="text-xs underline"
+                    >
+                      Forgot
+                    </Link>
+                  </div>
+
+                  <FormControl>
+                    <AuthInput type="password" isPassword {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <AuthButton title="Sign In" type="submit" />
-        </form>
+            {/* Repeat FormField for email, password, and confirmPassword */}
+            <AuthButton title="Sign In" type="submit" />
+          </form>
+        </Form>
       </AuthWrapper>
     </div>
   );

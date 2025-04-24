@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Edit, Take, Update | Notes App",
-  description: "Edit, Take, Update, Delete Notes | Notes App",
+  title: "Notes-Dashboard | Notes",
+  description: "Take, Edit, Update, Delete Notes | Notes App",
 };
 
 export default function NoteLayout({
