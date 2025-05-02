@@ -60,6 +60,11 @@ export default function SignInPage() {
                       type="email"
                       placeholder="email@example.com"
                       {...field}
+                      className={`${
+                        form.formState.errors.email
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -87,7 +92,16 @@ export default function SignInPage() {
                   </div>
 
                   <FormControl>
-                    <AuthInput type="password" isPassword {...field} />
+                    <AuthInput
+                      className={`${
+                        form.formState.errors.password
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                      type="password"
+                      isPassword
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

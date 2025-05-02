@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/utils/logger";
 
-export const GET = async (_: NextRequest) => {
+export const GET = async () => {
   const session = await auth();
   console.log(session);
 
@@ -38,7 +38,8 @@ export const GET = async (_: NextRequest) => {
       user: { ...foundUser, password: undefined }, // Hide user password on return.
       message: "User data fetched successfully",
     });
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(`Error fetching user profile ${error.message}`);
     return NextResponse.json(
       {

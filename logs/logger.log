@@ -1,0 +1,174 @@
+[2025-04-25 01:16:08] - [ERROR] - Error signing up, user with email: flyalkjdh@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1482:161
+
+  1479     });
+  1480 }
+  1481 // Check if user already exists in db
+→ 1482 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Raw query failed. Code: `unknown`. Message: `Kind: Server selection timeout: No available servers. Topology: { Type: ReplicaSetNoPrimary, Set Name: atlas-aufm12-shard-0, Max Set Version: 10, Max Election ID: 7fffffff000000000000002a, Servers: [ { Address: ac-d6strqz-shard-00-01.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} }, { Address: ac-d6strqz-shard-00-02.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} }, { Address: ac-d6strqz-shard-00-00.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} } ] }, labels: {}`
+
+[2025-04-25 01:16:11] - [ERROR] - Error signing up, user with email: flyalkjdh@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1482:161
+
+  1479     });
+  1480 }
+  1481 // Check if user already exists in db
+→ 1482 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Raw query failed. Code: `unknown`. Message: `Kind: Server selection timeout: No available servers. Topology: { Type: ReplicaSetNoPrimary, Set Name: atlas-aufm12-shard-0, Max Set Version: 10, Max Election ID: 7fffffff000000000000002a, Servers: [ { Address: ac-d6strqz-shard-00-01.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} }, { Address: ac-d6strqz-shard-00-02.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} }, { Address: ac-d6strqz-shard-00-00.2yuk1ht.mongodb.net:27017, Type: Unknown, Error: Kind: I/O error: failed to lookup address information: Temporary failure in name resolution, labels: {} } ] }, labels: {}`
+
+[2025-04-25 01:16:22] - [ERROR] - Error signing up, user with email: flyalkjdh@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1501:155
+
+  1498 }, {
+  1499     status: 500
+  1500 });
+→ 1501 const user = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create(
+Unique constraint failed on the constraint: `User_email_key`
+
+[2025-04-25 01:16:26] - [ERROR] - Error signing up, user with email: flyalkjdh@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1501:155
+
+  1498 }, {
+  1499     status: 500
+  1500 });
+→ 1501 const user = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create(
+Unique constraint failed on the constraint: `User_email_key`
+
+[2025-04-25 01:16:26] - [ERROR] - Error signing up, user with email: flyalkjdh@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1501:155
+
+  1498 }, {
+  1499     status: 500
+  1500 });
+→ 1501 const user = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.create(
+Unique constraint failed on the constraint: `User_email_key`
+
+[2025-04-25 01:16:29] - [ERROR] - Email sent successfully! to flyalkjdh@gmail.com
+
+[2025-04-25 01:19:07] - [ERROR] - Email sent successfully! to flynnsf1keyz@gmail.com
+
+[2025-04-25 06:32:35] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1482:161
+
+  1479     });
+  1480 }
+  1481 // Check if user already exists in db
+→ 1482 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:56:51] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:57:16] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:57:30] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:57:47] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:59:50] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:59:54] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 06:59:55] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 07:00:15] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 07:09:44] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 07:10:41] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+
+[2025-04-25 07:14:40] - [ERROR] - Error signing up, user with email: flynnsf1keyz@gmail.com 
+Invalid `__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique()` invocation in
+/home/tembeng/Documents/new_projects/note-taking-app/.next/server/chunks/[root-of-the-server]__2422f371._.js:1476:161
+
+  1473     });
+  1474 }
+  1475 // Check if user already exists in db
+→ 1476 const userExists = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$prisma$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["prisma"].user.findUnique(
+Error in connector: Error creating a database connection. (Kind: An error occurred during DNS resolution: no record found for Query { name: Name("_mongodb._tcp.notes.2yuk1ht.mongodb.net."), query_type: SRV, query_class: IN }, labels: {})
+

@@ -53,7 +53,9 @@ export const DELETE = async (req: NextRequest) => {
       message: "User deleted successful",
       user: deletedUser,
     });
-  } catch (error: Error | any) {
+
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(`Error deleting user account ${error.message}`);
     return NextResponse.json(
       {

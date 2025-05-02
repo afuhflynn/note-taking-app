@@ -17,7 +17,8 @@ export function GitHubButton() {
       event.preventDefault();
       await githubSignInAction();
       setMessage("Github Sign in successful");
-    } catch (error: Error | any) {
+      // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+    } catch (error: Error) {
       console.error(error);
       setError(error.message);
     }
@@ -27,7 +28,7 @@ export function GitHubButton() {
     if (!error && message) {
       redirect("/notes");
     }
-  }, [error, message, redirect]);
+  }, [error, message]);
 
   return (
     <form onSubmit={handleGitHubSignIn} className="w-full h-auto">

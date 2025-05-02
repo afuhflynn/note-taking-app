@@ -49,7 +49,8 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({
       message: "Logout successful",
     });
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     console.error(error);
     logger.error(`Error signing out user ${error.message}`);
     return NextResponse.json(

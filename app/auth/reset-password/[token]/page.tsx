@@ -15,6 +15,7 @@ import {
 import { useForm } from "react-hook-form";
 import { resetPasswordSchema } from "@/zod/zod.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 export default function ResetPasswordPage() {
   const form = useForm({
@@ -25,7 +26,7 @@ export default function ResetPasswordPage() {
     },
   });
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: z.infer<typeof resetPasswordSchema>) => {
     // Handle form submission
     console.log(values);
   };
@@ -47,7 +48,16 @@ export default function ResetPasswordPage() {
                     New Password
                   </FormLabel>
                   <FormControl>
-                    <AuthInput type="password" isPassword {...field} />
+                    <AuthInput
+                      className={`${
+                        form.formState.errors.password
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                      type="password"
+                      isPassword
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                   <div className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto">
@@ -76,7 +86,16 @@ export default function ResetPasswordPage() {
                   </FormLabel>
 
                   <FormControl>
-                    <AuthInput type="password" isPassword {...field} />
+                    <AuthInput
+                      className={`${
+                        form.formState.errors.confirmPassword
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                      type="password"
+                      isPassword
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

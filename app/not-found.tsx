@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, FileQuestion, Home, Search } from "lucide-react";
+import { FileQuestion, Home, Search } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -64,8 +64,8 @@ export default function NotFound() {
               Oops! Page not found
             </h1>
             <p className="text-muted-foreground mb-8">
-              The page you're looking for doesn't exist or has been moved to
-              another location.
+              The page you&apos;re looking for doesn&apos;t exist or has been
+              moved to another location.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

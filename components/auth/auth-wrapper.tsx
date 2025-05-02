@@ -34,8 +34,7 @@ export function AuthWrapper({
         </div>
       </div>
       {children}
-      <FormError error={error} />
-      <FormSuccess message={message} />
+
       {showAuthButton && (
         <div className="mt-6">
           <div className="relative">
@@ -69,6 +68,8 @@ export function AuthWrapper({
           )}
         </div>
       )}
+      <FormError error={error} />
+      <FormSuccess message={message} />
     </div>
   );
 }

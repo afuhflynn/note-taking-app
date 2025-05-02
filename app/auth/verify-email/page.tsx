@@ -15,6 +15,7 @@ import {
 import { verifyEmailSchema } from "@/zod/zod.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 export default function VerifyEmail() {
   const form = useForm({
@@ -24,7 +25,7 @@ export default function VerifyEmail() {
     },
   });
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: z.infer<typeof verifyEmailSchema>) => {
     // Handle form submission
     console.log(values);
   };
@@ -46,7 +47,15 @@ export default function VerifyEmail() {
                     Verification Code
                   </FormLabel>
                   <FormControl>
-                    <AuthInput type="number" {...field} />
+                    <AuthInput
+                      className={`${
+                        form.formState.errors.code
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                      type="number"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

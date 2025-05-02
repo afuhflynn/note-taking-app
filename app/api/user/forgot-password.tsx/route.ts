@@ -42,7 +42,8 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({
       message: "Email sent successful",
     });
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(`Error sending password reset email ${error.message}`);
     return NextResponse.json(
       {

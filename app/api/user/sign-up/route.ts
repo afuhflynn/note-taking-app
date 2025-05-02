@@ -1,24 +1,21 @@
 // import { auth } from "@/lib/auth";
 
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/utils/Emails/send.emails";
+import { generateToken } from "@/utils/generate-token";
+import { generateVerificationCode } from "@/utils/generateCode";
 import { logger } from "@/utils/logger";
-import { signUpSchema } from "@/zod/zod.schema";
 import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
   const { email, password } = await req.json();
-  // Validate request body
-  const validatedCredentials = await signUpSchema.safeParseAsync({
-    email,
-    password,
-  });
   try {
     // Throw new error if request body validation fails
-    if (validatedCredentials.error) {
+    if (!password || !email) {
       return NextResponse.json(
         {
-          error: `${validatedCredentials.error.message}`,
+          error: `Both email and passwords are required`,
         },
         { status: 400 }
       );
@@ -27,7 +24,7 @@ export const POST = async (req: NextRequest) => {
     // Check if user already exists in db
     const userExists = await prisma.user.findUnique({
       where: {
-        email: validatedCredentials.data.email,
+        email: email,
       },
     });
 
@@ -41,7 +38,7 @@ export const POST = async (req: NextRequest) => {
       );
 
     // Hash new user password
-    const pwdHash = await hash(validatedCredentials.data.password, 10);
+    const pwdHash = await hash(password, 10);
 
     // Throw new error if pwdHash fails for some reason
     if (!pwdHash)
@@ -51,11 +48,26 @@ export const POST = async (req: NextRequest) => {
         },
         { status: 500 }
       );
+    // send verification email
+    const code = generateVerificationCode();
+    const token = generateToken();
+    sendVerificationEmail(code, email, "User", token, {
+      "X-Category": "Verification Email",
+    });
 
     const user = await prisma.user.create({
       data: {
-        email: validatedCredentials.data.email,
+        email: email,
         password: pwdHash,
+        emailVerificationCode: code,
+        emailVerificationToken: token,
+        emailVerificationCodeExpiresAt: new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ), // 24 hours
+        emailVerificationTokenExpiresAt: new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ),
+        emailVerified: null, // Make sure that the user account is set as not yet verified
       },
     });
 
@@ -75,13 +87,14 @@ export const POST = async (req: NextRequest) => {
         status: 201,
       }
     );
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(
       `Error signing up, user with email: ${email} ${error.message}`
     );
     return NextResponse.json(
       {
-        error: `Error signing up: ${error.message}`,
+        error: `Error signing up. Please try again later`,
       },
       {
         status: 500,

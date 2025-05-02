@@ -14,6 +14,7 @@ import {
 import { resendVerificationEmailSchema } from "@/zod/zod.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 export default function ResendVerificationEmailPage() {
   const form = useForm({
@@ -23,7 +24,7 @@ export default function ResendVerificationEmailPage() {
     },
   });
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: z.infer<typeof resendVerificationEmailSchema>) => {
     // Handle form submission
     console.log(values);
   };
@@ -49,6 +50,11 @@ export default function ResendVerificationEmailPage() {
                       type="email"
                       placeholder="email@example.com"
                       {...field}
+                      className={`${
+                        form.formState.errors.email
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
                     />
                   </FormControl>
                   <FormMessage />

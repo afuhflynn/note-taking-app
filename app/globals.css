@@ -413,11 +413,27 @@
   }
 
   .auth-container {
-    @apply min-h-screen w-full md:px-0 flex items-center justify-center bg-neutral-50 dark:bg-neutral-600;
+    @apply min-h-screen w-full px-1 md:px-0 flex items-center justify-center bg-neutral-50 dark:bg-neutral-700;
   }
 
   input::-webkit-inner-spin-button,
   input::-webkit-outer-spin-button {
     @apply hidden;
+  }
+
+  .paddingX {
+    @apply md:px-5 px-3;
+  }
+
+  .scroll-view::-webkit-scrollbar {
+    @apply hidden;
+  }
+
+  .border-left {
+    @apply border border-r-muted border-y-0 border-l-0 rounded-none;
+  }
+
+  .padding {
+    @apply p-[20px];
   }
 }

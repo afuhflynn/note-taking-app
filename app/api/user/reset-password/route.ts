@@ -58,7 +58,8 @@ export const PUT = async (req: NextRequest) => {
       user: { ...updatedUser, password: undefined }, // Hide user password on return.
       message: "Password updated successfully.",
     });
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(`Error resetting user password ${error.message}`);
     return NextResponse.json(
       {

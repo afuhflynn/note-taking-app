@@ -102,7 +102,7 @@ export const HeroSection = () => {
         }}
       />
 
-      <div className="container px-4 md:px-6 relative">
+      <div className="w-full paddingX relative">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           <motion.div
             className="flex flex-col justify-center space-y-6"
@@ -112,7 +112,7 @@ export const HeroSection = () => {
           >
             <motion.div
               variants={item}
-              className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 w-fit"
+              className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80 w-fit text-left"
             >
               <Sparkles className="mr-1 h-3 w-3" /> Turn Ideas into memos
             </motion.div>
@@ -120,7 +120,7 @@ export const HeroSection = () => {
             <div className="space-y-4">
               <motion.h1
                 variants={item}
-                className="text-4xl font-bold tracking-tighter text-center sm:text-left sm:text-5xl md:text-6xl lg:text-7xl"
+                className="text-5xl font-bold tracking-tighter text-center sm:text-left sm:text-5xl md:text-6xl lg:text-7xl"
               >
                 Capture ideas,{" "}
                 <span className="bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent">
@@ -130,7 +130,7 @@ export const HeroSection = () => {
 
               <motion.p
                 variants={item}
-                className="max-w-[600px] text-muted-foreground text-lg md:text-xl"
+                className="max-w-[600px] text-muted-foreground text-lg text-center md:text-left mt-4 md:mt-0 md:text-xl"
               >
                 A powerful note-taking app that helps you stay organized and
                 productive. Create, edit, and access your notes from anywhere.

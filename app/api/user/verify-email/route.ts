@@ -40,9 +40,9 @@ export const POST = async (req: NextRequest) => {
     // Update user db object
     foundUser.emailVerified = new Date(Date.now());
     foundUser.emailVerificationCodeExpiresAt = new Date(Date.now());
-    foundUser.emailVerificationCode = undefined;
+    foundUser.emailVerificationCode = null;
     foundUser.emailVerificationTokenExpiresAt = new Date(Date.now());
-    foundUser.emailVerificationToken = undefined;
+    foundUser.emailVerificationToken = null;
 
     // Update db
     await prisma.user.update({
@@ -60,7 +60,8 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({
       message: "Email verified successful",
     });
-  } catch (error: Error | any) {
+    // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
+  } catch (error: Error) {
     logger.error(`Email verification failed ${error.message}`);
     return NextResponse.json(
       {

@@ -7,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "mongodb"
+  url       = env("DATABASE_LOCAL_URL")
+  directUrl = env("DATABASE_URL")
 }
 
 // Enum

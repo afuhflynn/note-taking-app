@@ -11,16 +11,16 @@ export default function HomePage() {
   const { getUserProfile, user } = useUserStore();
   useEffect(() => {
     getUserProfile();
-  }, []);
+  }, [getUserProfile]);
 
   // Redirect if a valid user object exists
   useEffect(() => {
     if (user && user.email) {
       redirect("/notes");
     }
-  }, []);
+  }, [user]);
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       {/* Header */}
       <NavBar />
 

@@ -2,11 +2,11 @@ import { compare } from "bcryptjs";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
-import { User } from "@prisma/client";
+// import { User } from "@prisma/client";
 import { signInSchema } from "@/zod/zod.schema";
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
-import { v4 as uuid } from "uuid";
+// import { v4 as uuid } from "uuid";
 
 import { CustomPrismaAdapter } from "@/lib/custom-prisma-adapter";
 

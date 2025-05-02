@@ -377,13 +377,13 @@ const passwordResetEmailTemplate = `<!DOCTYPE html>
                 We received a request to reset your password. Click the button below to securely update your credentials.
               </p>
               <!-- Button -->
-              <a href="[reset_link]" style="display:inline-block;padding:12px 24px;font-size:16px;font-weight:500;color:#ffffff;background-color:#0073e6;border-radius:5px;text-decoration:none;">Reset Password</a>
+              <a href=[reset_link] style="display:inline-block;padding:12px 24px;font-size:16px;font-weight:500;color:#ffffff;background-color:#0073e6;border-radius:5px;text-decoration:none;">Reset Password</a>
               <p style="font-size:14px;color:#666666;margin:20px 0 10px;">
                 This link will expire in 24 hours for your security.
               </p>
               <p style="font-size:14px;color:#666666;margin:0;">
                 If the button doesn’t work, copy and paste the following URL into your browser:<br>
-                <a href="[reset_link]" style="color:#0073e6;text-decoration:none;word-break:break-all;">[reset_link]</a>
+                <a href=[reset_link] style="color:#0073e6;text-decoration:none;word-break:break-all;">[reset_link]</a>
               </p>
               <p style="font-size:14px;line-height:1.4;color:#666666;margin:20px 0 0;">
                 If you did not request a password reset, you can safely ignore this email or <a href="mailto:flyinnsafuh@gmail.com" style="color:#0073e6;text-decoration:none;">contact support</a>.

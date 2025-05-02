@@ -1,11 +1,21 @@
+"use client";
+
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
+import { useState } from "react";
 
 export const SearchBar = () => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
   return (
-    <div className="relative w-auto h-auto p-1 flex items-center">
-      <Search className="absolute left-0" />
-      <Input placeholder="Search by title, content, or tags..." />
+    <div className="w-[300px] h-[44px] p-[16px] gap-[8px] flex items-center rounded-[8px] border">
+      <Search className="text-neutral-500" />
+      <Input
+        name="search-query"
+        placeholder="Search by title, content, or tags..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="border-none p-0 focus-visible:ring-0 bg-transparent focus-within:outline-none outline-none ring-offset-0"
+      />
     </div>
   );
 };

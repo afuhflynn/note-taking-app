@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 import { Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function FontToggle() {
-  const [currentFont, setCurrentFont] = useState("Inter");
+  // const [currentFont, setCurrentFont] = useState("Inter");
 
   const setFont = (fontName: string) => {
-    setCurrentFont(fontName);
+    // setCurrentFont(fontName);
     document.documentElement.style.setProperty(
       "--font-sans",
       fontName === "Inter"

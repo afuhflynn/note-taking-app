@@ -6,7 +6,7 @@ import { useUserStore } from "@/store/user.store";
 // import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-export default function NotesPage() {
+export default function ArchivedNotesPage() {
   const { getUserProfile, user, isGettingUserProfile } = useUserStore();
   useEffect(() => {
     getUserProfile();

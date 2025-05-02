@@ -15,8 +15,15 @@ import {
 import { useForm } from "react-hook-form";
 import { signUpSchema } from "@/zod/zod.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useUserStore } from "@/store/user.store";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const { signUp, message, error, setError, setMessage, loading } =
+    useUserStore();
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -25,10 +32,21 @@ export default function SignUpPage() {
     },
   });
 
-  const onSubmit = (values: any) => {
-    // Handle form submission
-    console.log(values);
+  useEffect(() => {
+    setMessage(null);
+    setError(null);
+  }, [setMessage, setError]);
+
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    signUp(values);
   };
+
+  // clear the error and message and redirect the user to verify email page
+  useEffect(() => {
+    if (message && message !== null && error === null) {
+      router.push("/auth/verify-email");
+    }
+  }, [message, error, router]);
 
   return (
     <div className="auth-container">
@@ -53,6 +71,11 @@ export default function SignUpPage() {
                       type="email"
                       placeholder="email@example.com"
                       {...field}
+                      className={`${
+                        form.formState.errors.email
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -68,7 +91,16 @@ export default function SignUpPage() {
                     Password
                   </FormLabel>
                   <FormControl>
-                    <AuthInput type="password" isPassword {...field} />
+                    <AuthInput
+                      className={`${
+                        form.formState.errors.password
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                      type="password"
+                      isPassword
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                   <div className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto">
@@ -77,15 +109,23 @@ export default function SignUpPage() {
                       alt="Info icon"
                       width={24}
                       height={24}
-                      className="w-auto h-auto dark:invert"
+                      className={`w-auto h-auto dark:invert ${
+                        form.formState.errors.password ? "fill-destructive" : ""
+                      }`}
                     />{" "}
-                    <span>At least 8 characters</span>
+                    <span
+                      className={`${
+                        form.formState.errors.password ? "text-destructive" : ""
+                      }`}
+                    >
+                      At least 8 characters
+                    </span>
                   </div>
                 </FormItem>
               )}
             />
             {/* Repeat FormField for email, password, and confirmPassword */}
-            <AuthButton title="Sign Up" type="submit" />
+            <AuthButton isLoading={loading} title="Sign Up" type="submit" />
           </form>
         </Form>
       </AuthWrapper>

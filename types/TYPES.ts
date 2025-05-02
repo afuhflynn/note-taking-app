@@ -1,4 +1,6 @@
+import { signUpSchema } from "@/zod/zod.schema";
 import { User } from "@prisma/client";
+import { z } from "zod";
 
 export interface UserStore {
   user: User | null;
@@ -6,12 +8,24 @@ export interface UserStore {
   error: string | null | undefined;
   setError: (error: string | any) => void;
   message: string | null | undefined;
+  loading?: boolean;
   setMessage: (message: string | any) => void;
   isGettingUserProfile: boolean;
   isAuthenticated: boolean;
   getUserProfile: () => void;
+  signUp: (data: z.infer<typeof signUpSchema>) => void;
+}
+
+interface Note {
+  id: string;
+  title: string;
+  tags: string[];
+  updatedAt: Date;
 }
 export interface AppStore {
   prefersTheme: string | "system" | "light" | "dark";
   setPrefersTheme: (value: string | "system" | "light" | "dark") => void;
+  currentNote: Note | null;
+  setCurrentNote: (note: Note) => void;
+  fetchCurrentNote: (noteId: string) => void;
 }

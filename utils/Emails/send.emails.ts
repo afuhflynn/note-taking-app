@@ -37,8 +37,8 @@ const sendVerificationEmail = async (
       .replace("[user_name]", username)
       .replace("[verification_code]", code)
       .replace(
-        "href=[verification_link]",
-        `href=${clientUrl}/auth/verify-email/${token}`
+        "[verification_link]",
+        `"${clientUrl}/auth/verify-email/${token}"`
       );
     await sendEmail(
       email,
@@ -68,7 +68,7 @@ const sendNotificationEmail = async (
       .replace("[activity_description]", activity)
       .replace("[activity_time]", time)
       .replace("[activity_author]", author)
-      .replace("href=[account_security_link]", `href=${clientUrl}`);
+      .replace("[account_security_link]", `"${clientUrl}"`);
     await sendEmail(
       email,
       "Notification Email",
@@ -90,7 +90,7 @@ const sendWelcomeEmail = async (
   try {
     const newEmail: string = welcomeEmailTemplate
       .replace("[user_name]", username)
-      .replace("href=[homepage_link]", `href=${clientUrl}`);
+      .replace("[homepage_link]", `"${clientUrl}"`);
     //Send email content
     await sendEmail(email, "Welcome Email", newEmail, headers, attachments);
   } catch (error: any | { message: string }) {
@@ -107,7 +107,7 @@ const sendLogoutEmail = async (
   try {
     const newEmail: string = accountLogoutEmailTemplate
       .replace("[user_name]", username)
-      .replace("href=[account_security_link]", `href=${clientUrl}`);
+      .replace("[account_security_link]", `"${clientUrl}"`);
     //Send email content
     await sendEmail(email, "Logout Email", newEmail, headers, attachments);
   } catch (error: any | { message: string }) {
@@ -125,8 +125,8 @@ const sendPasswordResetEmail = async (
   try {
     const newEmail: string = passwordResetEmailTemplate
       .replace("[user_name]", username)
-      .replace("<[reset_link]>", resetUrl)
-      .replace("href=[reset_link]", `href=${resetUrl}`);
+      .replace("[reset_link]", resetUrl)
+      .replace("href=[reset_link]", `href="${resetUrl}"`);
     //Send email content
     await sendEmail(
       email,
@@ -150,8 +150,8 @@ const sendAccountDeleteEmail = async (
   try {
     const newEmail: string = accountDeleteEmailTemplate
       .replace("[user_name]", username)
-      .replace("href=[cancel_deletion_link]", `href=${clientUrl}`)
-      .replace("href=[account_deletion_link]", `href=${deleteUrl}`)
+      .replace("[cancel_deletion_link]", `"${clientUrl}"`)
+      .replace("[account_deletion_link]", `"${deleteUrl}"`)
       .replace("[account_deletion_link]", deleteUrl)
       .replace("[cancel_deletion_link]", clientUrl!);
     //Send email content
