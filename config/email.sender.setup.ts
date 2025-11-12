@@ -1,4 +1,3 @@
-import { logger } from "@/utils/logger";
 import { emailTransporter } from "./nodemailer.config";
 import { Attachment } from "nodemailer/lib/mailer/index";
 
@@ -23,9 +22,7 @@ export const sendEmail = async (
       headers: headers,
     });
     console.log("Email sent successfully!");
-    logger.error(`Email sent successfully! to ${to}`);
   } catch (error: any | { message: string }) {
-    logger.error(`Error sending email: ${error.message} - to ${to}`);
     console.error("Error sending email:", error);
   }
 };

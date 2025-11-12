@@ -16,11 +16,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { credentialsSignInAction } from "@/actions/credentials-signin";
+import { signIn } from "@/lib/auth-client";
+import { useUserStore } from "@/store/user.store";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type SignInData = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
+  const { loading, setLoading } = useUserStore();
+  const router = useRouter();
   const form = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -30,9 +35,22 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (values: SignInData) => {
-    // Handle form submission
-    await credentialsSignInAction(values);
-    console.log(values);
+    setLoading(true);
+    try {
+      // Handle form submission
+      const { error } = await signIn.email(values);
+      if (error) {
+        return toast.error(error.message);
+      }
+
+      toast.success("Sign In successful");
+      router.push("/notes");
+    } catch (error: Error | any) {
+      console.error(error);
+      toast.error(error.messsage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // TODO: Redirect the users to previous route after login if the route is not home page or any auth page.
@@ -84,8 +102,9 @@ export default function SignInPage() {
                       Password
                     </FormLabel>
                     <Link
-                      href="/auth/forgot-password"
+                      href="/forgot-password"
                       className="text-xs underline"
+                      prefetch
                     >
                       Forgot
                     </Link>
@@ -108,7 +127,7 @@ export default function SignInPage() {
               )}
             />
             {/* Repeat FormField for email, password, and confirmPassword */}
-            <AuthButton title="Sign In" type="submit" />
+            <AuthButton title="Sign In" type="submit" isLoading={loading} />
           </form>
         </Form>
       </AuthWrapper>

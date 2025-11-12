@@ -74,7 +74,7 @@ export default function NotFound() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button asChild className="gap-2">
-                  <Link href="/">
+                  <Link href="/" prefetch>
                     <Home className="h-4 w-4" />
                     Back to Home
                   </Link>
@@ -85,7 +85,7 @@ export default function NotFound() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button variant="outline" asChild className="gap-2">
-                  <Link href="/notes">
+                  <Link href="/notes" prefetch>
                     <Search className="h-4 w-4" />
                     Return to Notes
                   </Link>

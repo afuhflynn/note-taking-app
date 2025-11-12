@@ -65,8 +65,9 @@ export default function VerifyEmail() {
             <div className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto">
               <span>Did&apos;t receive the code?</span>
               <Link
-                href="/auth/resend-verification-email"
+                href="/resend-verification-email"
                 className="flex flex-row items-center gap-1 text-muted-foreground text-sm h-auto hover:underline hover:text-muted-foreground/90"
+                prefetch
               >
                 Resend Email
               </Link>

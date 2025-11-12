@@ -9,7 +9,7 @@ export const NavBar = () => {
   const pathName = usePathname();
 
   return (
-    <nav className="h-full w-[18rem] flex flex-col border-left md:py-4 md:pr-4 pr-2 py-2 gap-6">
+    <nav className="h-full w-[272px] flex flex-col border-left md:py-4 md:pr-4 pr-2 py-2 gap-6">
       <div className="border border-b-muted border-x-0 border-t-0 pb-4">
         <NotesLogo className="dark:fill-white" />
       </div>
@@ -25,6 +25,7 @@ export const NavBar = () => {
             >
               <Link
                 href={item.href}
+                prefetch
                 className="flex items-center justify-between"
               >
                 <div className="flex items-center gap-2">

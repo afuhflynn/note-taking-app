@@ -87,7 +87,7 @@ export default function Error({
                 whileTap={{ scale: 0.95 }}
               >
                 <Button variant="outline" asChild className="gap-2">
-                  <Link href="/">
+                  <Link href="/" prefetch>
                     <Home className="h-4 w-4" />
                     Go to Home
                   </Link>

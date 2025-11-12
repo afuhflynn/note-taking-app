@@ -30,6 +30,7 @@ export const AllNotes = () => {
           <Link
             key={item.id}
             onClick={() => setCurrentNote(item)}
+            prefetch
             href={`${pathName}?note=${item.title
               .toLowerCase()
               .trim()

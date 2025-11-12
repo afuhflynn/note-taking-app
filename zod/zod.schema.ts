@@ -47,6 +47,13 @@ export const signUpSchema = z.object({
     .max(20, {
       message: "Password must be at most 20 characters.",
     }),
+    name: z.string({
+      message: "Please enter a name to proceed.",
+    }).min(1, {
+      message: "A valid name must contain atleast 1 character."
+    }).max(30, {
+      message: "A valid name must not be more than 30 characters."
+    })
 });
 
 export const forgotPasswordSchema = z.object({

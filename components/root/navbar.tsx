@@ -4,41 +4,45 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NotesLogo } from "@/components/ui/logo";
-import { ThemeToggle } from "../theme-toggle";
 
 export const NavBar = () => {
   return (
     <motion.header
-      className="border-b sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between w-[100%]"
-      initial={{ y: -100, opacity: 0 }}
+      className="sticky top-0 z-50 w-full border-b border-neutral-200/50 dark:border-neutral-800/50 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md"
+      initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="w-[100%] py-3 flex items-center justify-between paddingX">
-        <NotesLogo className="dark:fill-white" />
-        <ThemeToggle />
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Link href="/sign-in">
+      <nav className="mx-auto px-6 md:px-12 lg:px-20">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center" prefetch>
+            <NotesLogo className="dark:fill-white transition-opacity hover:opacity-80" />
+          </Link>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-3">
+            <Link href="/sign-in" className="hidden sm:block" prefetch>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                className="hidden md:inline-flex"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100"
               >
                 Sign In
               </Button>
             </Link>
-            <Link href="/sign-up">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+
+            <Link href="/sign-up" prefetch>
+              <Button
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
               >
-                <Button size="sm">Get Started</Button>
-              </motion.div>
+                Get Started
+              </Button>
             </Link>
           </div>
         </div>
-      </div>
+      </nav>
     </motion.header>
   );
 };

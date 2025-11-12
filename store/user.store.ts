@@ -10,6 +10,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
   error: null,
   loading: false,
 
+  setLoading: (loading) => {
+    set({ loading });
+  },
   setError: (error) => {
     set({ error });
   },
@@ -50,14 +53,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({ isAuthenticated: true });
     }
   },
-  signUp: async (data) => {
+  signUpUser: async (data) => {
     set({ loading: true, message: null, error: null });
     try {
       const result = await privateAxios.post<{ message: string }>(
-        "/api/user/sign-up",
+        "/user/sign-up",
         {
           email: data.email,
-          password: data.password,
         }
       );
       set({ message: result.data.message });

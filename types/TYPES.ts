@@ -9,11 +9,12 @@ export interface UserStore {
   setError: (error: string | any) => void;
   message: string | null | undefined;
   loading?: boolean;
+  setLoading: (loading: boolean) => void;
   setMessage: (message: string | any) => void;
   isGettingUserProfile: boolean;
   isAuthenticated: boolean;
   getUserProfile: () => void;
-  signUp: (data: z.infer<typeof signUpSchema>) => void;
+  signUpUser: ({ email }: { email: string }) => void;
 }
 
 interface Note {

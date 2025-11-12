@@ -23,8 +23,8 @@ export const TopBar = () => {
       <div className="flex items-center gap-[16px]">
         <SearchBar />
         <Button variant={"ghost"} className="rounded-lg" size={"icon"} asChild>
-          <Link href={"/settings"}>
-            <Settings className="h-5 w-5" />
+          <Link href={"/settings"} prefetch>
+            <Settings className="text-neutral-500 size-[24px]" />
           </Link>
         </Button>
       </div>

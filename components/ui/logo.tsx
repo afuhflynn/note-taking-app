@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export const NotesLogo = ({ className }: { className?: string }) => {
   return (
-    <Link href="/">
+    <Link href="/" prefetch>
       <motion.div
         className={`rounded w-auto h-full`}
         whileHover={{ rotate: 1, scale: 1.002 }}

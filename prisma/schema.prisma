@@ -11,16 +11,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum
+enum PrefersTheme {
+  SYSTEM
+  LIGHT
+  DARK
+}
+
+enum PrefersFont {
+  SANS_SERIF
+  SERIF
+  MONO_SPACE
+}
+
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                              String        @id
+  name                            String
+  email                           String
+  emailVerified                   Boolean       @default(false)
+  image                           String?
+  emailVerificationCode           String?       @map("email_verification_code")
+  emailVerificationToken          String?       @map("email_verification_token")
+  emailVerificationCodeExpiresAt  DateTime?     @map("email_verification_code_expires_at")
+  emailVerificationTokenExpiresAt DateTime?     @map("email_verification_token_expires_at")
+  prefersTheme                    PrefersTheme  @default(SYSTEM)
+  prefersFont                     PrefersFont   @default(SANS_SERIF)
+  createdAt                       DateTime      @default(now())
+  updatedAt                       DateTime      @default(now()) @updatedAt
+  sessions                        Session[]
+  accounts                        Account[]
+  userSettings                    UserSetting[]
+  notes                           Note[]
+  noteTags                        NoteTag[]
+  tags                            Tag[]
+  noteHistories                   NoteHistory[]
 
   @@unique([email])
   @@map("user")
@@ -69,4 +93,70 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model UserSetting {
+  userId           String @id @map("_id")
+  colorTheme       String @default("light")
+  fontTheme        String @default("default")
+  otherPreferences Json
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Note {
+  id           String   @id @default(cuid())
+  noteId       String?  @unique
+  userId       String
+  title        String
+  content      String
+  archived     Boolean  @default(false)
+  parentNoteId String?  @unique // Optional for nested notes
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  // Relations
+  user     User   @relation(fields: [userId], references: [id])
+  parent   Note?  @relation("NoteToChildren", fields: [parentNoteId], references: [noteId], onDelete: NoAction, onUpdate: NoAction)
+  children Note[] @relation("NoteToChildren")
+
+  noteTags    NoteTag[]
+  noteHistory NoteHistory[]
+}
+
+model NoteTag {
+  id         String   @id @default(cuid())
+  noteId     String
+  tagId      String
+  assignedAt DateTime @default(now())
+
+  note   Note    @relation(fields: [noteId], references: [noteId])
+  tag    Tag     @relation(fields: [tagId], references: [tagId])
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  // Optional userId for user-specific tags
+}
+
+model Tag {
+  tagId  String  @id @default(cuid())
+  name   String
+  userId String?
+
+  // Relations
+  user     User?     @relation(fields: [userId], references: [id])
+  noteTags NoteTag[]
+
+  @@unique([name, userId])
+}
+
+model NoteHistory {
+  historyId       String   @id @default(cuid())
+  noteId          String
+  versionNumber   Int
+  contentSnapshot String
+  updatedAt       DateTime @default(now())
+
+  note   Note    @relation(fields: [noteId], references: [noteId])
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }

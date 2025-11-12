@@ -1,10 +1,6 @@
-"use client";
 import { NotesLogo } from "@/components/ui/logo";
 import { Footer } from "./footer";
 import { GitHubButton } from "./github";
-import { FormError } from "./form-error";
-import { FormSuccess } from "./form-success";
-import { useUserStore } from "@/store/user.store";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -23,7 +19,6 @@ export function AuthWrapper({
   isSignIn,
   isSignUp,
 }: AuthWrapperProps) {
-  const { error, message } = useUserStore();
   return (
     <div className="w-full max-w-md md:p-8 p-4 md:py-10 py-5 bg-background rounded-lg shadow-sm border-border">
       <div className="flex flex-col items-center mb-6 gap-6 w-full">
@@ -68,8 +63,8 @@ export function AuthWrapper({
           )}
         </div>
       )}
-      <FormError error={error} />
-      <FormSuccess message={message} />
+      {/* <FormError error={error} />
+      <FormSuccess message={message} /> */}
     </div>
   );
 }

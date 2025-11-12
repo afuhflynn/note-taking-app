@@ -19,9 +19,11 @@ import { z } from "zod";
 import { useUserStore } from "@/store/user.store";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
-  const { signUp, message, error, setError, setMessage, loading } =
+  const { setError, setMessage, loading, setLoading, signUpUser } =
     useUserStore();
   const router = useRouter();
   const form = useForm({
@@ -29,24 +31,42 @@ export default function SignUpPage() {
     defaultValues: {
       email: "",
       password: "",
+      name: "",
     },
   });
 
-  useEffect(() => {
-    setMessage(null);
-    setError(null);
-  }, [setMessage, setError]);
-
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    signUp(values);
-  };
+    setLoading(true);
+    try {
+      const { error } = await signUp.email({
+        email: values.email,
+        password: values.password,
+        name: values.email || "User",
+      });
 
-  // clear the error and message and redirect the user to verify email page
-  useEffect(() => {
-    if (message && message !== null && error === null) {
-      router.push("/auth/verify-email");
+      if (error) {
+        setError(error.message);
+        toast.error(error.message);
+      } else {
+        setMessage(
+          "Sign up successful! Please check your email to verify your account."
+        );
+        toast.success(
+          "Sign up successful! Please check your email to verify your account."
+        );
+      }
+
+      // Send user a verification email
+      // await signUpUser({ email: values.email }); // TODO: REMOVE THIS LATER FOR INTERNET USAGE
+      toast.success("Account created successfully.");
+      router.push("/verify-email");
+    } catch (error: Error | any) {
+      console.error(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  }, [message, error, router]);
+  };
 
   return (
     <div className="auth-container">
@@ -73,6 +93,30 @@ export default function SignUpPage() {
                       {...field}
                       className={`${
                         form.formState.errors.email
+                          ? "border-destructive"
+                          : "border-input"
+                      }`}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium" htmlFor="name">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <AuthInput
+                      type="name"
+                      placeholder="John Doe"
+                      {...field}
+                      className={`${
+                        form.formState.errors.name
                           ? "border-destructive"
                           : "border-input"
                       }`}
