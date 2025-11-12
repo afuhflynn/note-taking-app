@@ -1,9 +1,14 @@
-// app/actions/githubSignInAction.js
 "use server";
 
-import { signIn } from "@/lib/auth"; // This module should include your server-side logic (e.g., using Prisma)
+import { auth } from "@/lib/auth";
 
 // Example server action for GitHub sign-in
 export async function githubSignInAction() {
-  await signIn("github", { redirectTo: "/notes", redirect: false });
+  return await auth.api.signInSocial({
+    body: {
+      provider: "github",
+      callbackURL: "/notes",
+      errorCallbackURL: "/sign-in",
+    },
+  });
 }

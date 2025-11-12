@@ -1,4 +1,4 @@
-import { dummyNotes, navItems } from "@/lib/constants";
+import { dummyNotes, navItems } from "@/constants";
 import { NotesLogo } from "../ui/logo";
 import { Button } from "../ui/button";
 import Link from "next/link";

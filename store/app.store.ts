@@ -1,4 +1,4 @@
-import { dummyNoteItems } from "@/lib/constants";
+import { dummyNoteItems } from "@/constants";
 import { AppStore } from "@/types/TYPES";
 import { create } from "zustand";
 

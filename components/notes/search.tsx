@@ -14,7 +14,8 @@ export const SearchBar = () => {
         placeholder="Search by title, content, or tags..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border-none p-0 focus-visible:ring-0 bg-transparent focus-within:outline-none outline-none ring-offset-0"
+        type="text"
+        className="border-none p-0 focus-visible:ring-0 bg-transparent focus:outline-none ring-offset-0 appearance-none "
       />
     </div>
   );

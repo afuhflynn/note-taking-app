@@ -1,6 +1,6 @@
 "use client";
 
-import { dummyNoteItems } from "@/lib/constants";
+import { dummyNoteItems } from "@/constants";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";

@@ -1,176 +1,72 @@
 // schema.prisma
 
 // Generator and datasource
+
 generator client {
   provider = "prisma-client-js"
-  output   = "./dev-db"
 }
 
 datasource db {
-  provider  = "mongodb"
-  url       = env("DATABASE_LOCAL_URL")
-  directUrl = env("DATABASE_URL")
-}
-
-// Enum
-enum PrefersTheme {
-  system
-  light
-  dark
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id                              String        @id @default(auto()) @map("_id") @db.ObjectId
-  name                            String?
-  username                        String?
-  email                           String?       @unique
-  password                        String?
-  passwordResetToken              String?
-  passwordResetTokenExpiresAt     DateTime?
-  emailVerificationCode           String?
-  emailVerificationCodeExpiresAt  DateTime?
-  emailVerificationToken          String?
-  emailVerificationTokenExpiresAt DateTime?
-  emailVerified                   DateTime?
-  image                           String?
-  bio                             String?
-  prefersTheme                    PrefersTheme?
-  createdAt                       DateTime      @default(now())
-  updatedAt                       DateTime      @updatedAt
-
-  // Relationships
-  accounts      Account[]
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
-  Authenticator Authenticator[] // Optional WebAuthn support
-  userSettings  UserSetting?
-  notes         Note[]
-  noteTags      NoteTag[]
-  noteHistory   NoteHistory[]
+  accounts      Account[]
 
-  // Optional user settings
-  Tag Tag[]
-}
-
-model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
-  type              String
-  provider          String
-  providerAccountId String
-  refreshToken      String? @db.String
-  accessToken       String? @db.String
-  expiresAt         Int?
-  tokenType         String?
-  scope             String?
-  idToken           String? @db.String
-  sessionState      String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@unique([email])
+  @@map("user")
 }
 
 model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  sessionToken String   @unique
-  userId       String   @db.ObjectId
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id        String   @id
+  expiresAt DateTime
+  token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
 }
 
-model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
   identifier String
-  token      String
-  expires    DateTime
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
-  @@unique([identifier, token])
-}
-
-// Optional WebAuthn support
-model Authenticator {
-  credentialID         String  @id @map("_id")
-  userId               String  @db.ObjectId
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, credentialID])
-}
-
-model UserSetting {
-  userId           String @id @map("_id") @db.ObjectId
-  colorTheme       String @default("light")
-  fontTheme        String @default("default")
-  otherPreferences Json
-
-  user User @relation(fields: [userId], references: [id])
-}
-
-model Note {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  noteId       String?  @unique @db.ObjectId
-  userId       String   @db.ObjectId
-  title        String
-  content      String
-  archived     Boolean  @default(false)
-  parentNoteId String?  @unique @db.ObjectId // Optional for nested notes
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
-
-  // Relations
-  user     User   @relation(fields: [userId], references: [id])
-  parent   Note?  @relation("NoteToChildren", fields: [parentNoteId], references: [noteId], onDelete: NoAction, onUpdate: NoAction)
-  children Note[] @relation("NoteToChildren")
-
-  noteTags    NoteTag[]
-  noteHistory NoteHistory[]
-}
-
-model NoteTag {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  noteId     String   @db.ObjectId
-  tagId      String   @db.ObjectId
-  assignedAt DateTime @default(now())
-
-  note   Note    @relation(fields: [noteId], references: [noteId])
-  tag    Tag     @relation(fields: [tagId], references: [tagId])
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
-  // Optional userId for user-specific tags
-}
-
-model Tag {
-  tagId  String  @id @default(auto()) @map("_id") @db.ObjectId
-  name   String  @db.String
-  userId String? @db.ObjectId
-
-  // Relations
-  user     User?     @relation(fields: [userId], references: [id])
-  noteTags NoteTag[]
-
-  @@unique([name, userId])
-}
-
-model NoteHistory {
-  historyId       String   @id @default(auto()) @map("_id") @db.ObjectId
-  noteId          String   @db.ObjectId
-  versionNumber   Int
-  contentSnapshot String
-  updatedAt       DateTime @default(now())
-
-  note   Note    @relation(fields: [noteId], references: [noteId])
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String? @db.ObjectId
+  @@map("verification")
 }

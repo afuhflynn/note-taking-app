@@ -1,7 +1,7 @@
 import { UserStore } from "@/types/TYPES";
-import { privateAxios } from "@/utils/axios.config";
 import { create } from "zustand";
 import { User } from "@prisma/client";
+import { privateAxios } from "@/config/axios.config";
 
 export const controller = new AbortController(); // Controlling and aborting signals
 

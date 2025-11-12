@@ -1,4 +1,4 @@
-import { navItems } from "@/lib/constants";
+import { navItems } from "@/constants";
 import { SearchBar } from "./search";
 import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
