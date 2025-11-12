@@ -145,7 +145,7 @@ export const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link href="/auth/sign-up">
+                <Link href="/sign-up">
                   <Button
                     size="lg"
                     className="gap-2 text-base w-full md:w-auto"
@@ -158,7 +158,7 @@ export const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link href="/auth/sign-in">
+                <Link href="/sign-in">
                   <Button
                     size="lg"
                     variant="outline"

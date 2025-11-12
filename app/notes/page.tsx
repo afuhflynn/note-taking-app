@@ -15,7 +15,7 @@ export default function NotesPage() {
   // Redirect if a valid user object exists
   useEffect(() => {
     if (!user) {
-      // redirect("/auth/sign-in");
+      // redirect("/sign-in");
     }
   }, [user]);
 

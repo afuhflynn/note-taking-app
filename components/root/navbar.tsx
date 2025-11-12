@@ -19,7 +19,7 @@ export const NavBar = () => {
         <ThemeToggle />
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Link href="/auth/sign-in">
+            <Link href="/sign-in">
               <Button
                 variant="outline"
                 size="sm"
@@ -28,7 +28,7 @@ export const NavBar = () => {
                 Sign In
               </Button>
             </Link>
-            <Link href="/auth/sign-up">
+            <Link href="/sign-up">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
