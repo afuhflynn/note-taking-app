@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { deleteAccountSchemaServer } from "@/zod/zod.schema";
-import { logger } from "@/utils/logger";
 
 export const DELETE = async (req: NextRequest) => {
   const { email, id } = await req.json();
@@ -56,7 +55,7 @@ export const DELETE = async (req: NextRequest) => {
 
     // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
   } catch (error: Error) {
-    logger.error(`Error deleting user account ${error.message}`);
+    console.error(`Error deleting user account ${error.message}`);
     return NextResponse.json(
       {
         error: `Error deleting user account: ${error.message}`,

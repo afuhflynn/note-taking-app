@@ -8,6 +8,8 @@
 
 import { privateAxios } from "@/config/axios.config";
 import { API_BASE } from "@/constants";
+import { CurrentNote } from "@/types/TYPES";
+import { User } from "@prisma/client";
 
 // Helper function for making authenticated requests
 async function apiRequest<T>(
@@ -17,13 +19,11 @@ async function apiRequest<T>(
     method: "POST" | "PUT" | "PATCH" | "DELETE" | "GET";
   }
 ): Promise<T | null> {
-  const url = `${API_BASE}${endpoint}`;
-
   switch (options.method) {
     case "GET":
       try {
         const response = await privateAxios.get<any | null>(
-          url,
+          endpoint,
           options.body ?? {}
         );
 
@@ -38,7 +38,7 @@ async function apiRequest<T>(
     case "DELETE":
       try {
         const response = await privateAxios.delete<any | null>(
-          url,
+          endpoint,
           options.body ?? {}
         );
 
@@ -53,7 +53,7 @@ async function apiRequest<T>(
     case "POST":
       try {
         const response = await privateAxios.post<any | null>(
-          url,
+          endpoint,
           options.body ?? {}
         );
         const data = response.data;
@@ -67,7 +67,7 @@ async function apiRequest<T>(
     case "PUT":
       try {
         const response = await privateAxios.put<any | null>(
-          url,
+          endpoint,
           options.body ?? {}
         );
         const data = response.data;
@@ -81,7 +81,7 @@ async function apiRequest<T>(
     case "PATCH":
       try {
         const response = await privateAxios.patch<any | null>(
-          url,
+          endpoint,
           options.body ?? {}
         );
         const data = response.data;
@@ -100,4 +100,17 @@ async function apiRequest<T>(
 }
 
 // API Methods
-export const api = {};
+export const api = {
+  user: {
+    getUserData: async () =>
+      await apiRequest<User>("/user/get-user-profile", {
+        method: "GET",
+      }),
+  },
+  note: {
+    getAll: async () =>
+      await apiRequest<CurrentNote[]>("/notes", {
+        method: "GET",
+      }),
+  },
+};

@@ -1,5 +1,5 @@
 import { dummyNoteItems } from "@/constants";
-import { AppStore } from "@/types/TYPES";
+import { AppStore, CurrentNote } from "@/types/TYPES";
 import { create } from "zustand";
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -11,8 +11,21 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrentNote(note) {
     set({ currentNote: note });
   },
+  notes: [],
+  setNotes(notes) {
+    set({ notes });
+  },
+
+  newNote: null,
+  setNewNote(newNote) {
+    set({ newNote });
+  },
+
   fetchCurrentNote(noteId) {
-    const note = dummyNoteItems.find((item) => item.id === noteId);
+    // @ts-ignore // TODO: remove this later
+    const note = dummyNoteItems.find(
+      (item) => item.id === noteId
+    ) as CurrentNote;
     set({ currentNote: note });
   },
 }));

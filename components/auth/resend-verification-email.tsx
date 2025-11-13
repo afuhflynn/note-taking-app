@@ -1,29 +1,22 @@
 "use client";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { AuthButton } from "./button";
-import { AuthInput } from "./input";
 
 import { useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { AuthInput } from "./input";
+import { AuthButton } from "./button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { resendVerificationEmailSchema } from "@/zod/zod.schema";
 import { z } from "zod";
-import { forgotPasswordSchema } from "@/zod/zod.schema";
 
-export const ForgotPasswordForm = () => {
+export const ResendVerificationEmail = () => {
   const form = useForm({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(resendVerificationEmailSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof forgotPasswordSchema>) => {
+  const onSubmit = (values: z.infer<typeof resendVerificationEmailSchema>) => {
     // Handle form submission
     console.log(values);
   };
@@ -54,7 +47,7 @@ export const ForgotPasswordForm = () => {
             </FormItem>
           )}
         />
-        <AuthButton title="Send Reset Link" type="submit" />
+        <AuthButton title="Resend Email" type="submit" />
       </form>
     </Form>
   );

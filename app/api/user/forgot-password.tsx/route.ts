@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { forgotPasswordSchemaServer } from "@/zod/zod.schema";
-import { logger } from "@/utils/logger";
 
 export const POST = async (req: NextRequest) => {
   const { email } = await req.json();
@@ -44,7 +43,7 @@ export const POST = async (req: NextRequest) => {
     });
     // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
   } catch (error: Error) {
-    logger.error(`Error sending password reset email ${error.message}`);
+    console.error(`Error sending password reset email ${error.message}`);
     return NextResponse.json(
       {
         error: `Error sending password reset email: ${error.message}`,

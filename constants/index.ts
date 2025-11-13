@@ -1,5 +1,4 @@
 import { Archive } from "lucide-react";
-import { HomeIcon } from "lucide-react";
 import { v4 as uuid4 } from "uuid";
 
 // Base API configuration
@@ -7,84 +6,37 @@ export const API_BASE = "/api";
 
 export const navItems = [
   {
-    id: uuid4(),
+    id: "home",
     title: "All Notes",
     href: "/notes",
-    Icon: HomeIcon,
   },
   {
-    id: uuid4(),
+    id: "archive",
     title: "Archived Notes",
     href: "/notes/archived",
-    Icon: Archive,
   },
 ];
 
-export const dummyNotes = [
+export const dummyTags = [
   {
-    id: uuid4(),
-    title: "Web Assembly programming",
-    tag: "web development",
+    id: 1,
+    tag: "web-development",
   },
   {
-    id: uuid4(),
-    title: "Web Server programming",
-    tag: "web console",
+    id: 2,
+    tag: "web-console",
   },
   {
-    id: uuid4(),
-    title: "Intro to html",
+    id: 3,
     tag: "internet",
   },
   {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
+    id: 5,
+    tag: "web",
   },
   {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
-  },
-  {
-    id: uuid4(),
-    title: "Intro to html",
-    tag: "internet",
+    id: 6,
+    tag: "dev",
   },
 ];
 

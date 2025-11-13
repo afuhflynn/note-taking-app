@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { logger } from "@/utils/logger";
+import { headers } from "next/headers";
 
 export const GET = async () => {
-  const session = await auth();
+  const session = await auth.api.getSession({ headers: await headers() });
   console.log(session);
 
   try {
@@ -35,12 +35,17 @@ export const GET = async () => {
 
     // Return user data
     return NextResponse.json({
-      user: { ...foundUser, password: undefined }, // Hide user password on return.
-      message: "User data fetched successfully",
+      ...foundUser,
+      emailVerificationCodeExpiresAt: undefined,
+      emailVerificationToken: undefined,
+      emailVerificationTokenExpiresAt: undefined,
+      passwordResetToken: undefined,
+      passwordResetTokenExpiresAt: undefined,
+      emailVerificationCode: undefined,
     });
     // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
   } catch (error: Error) {
-    logger.error(`Error fetching user profile ${error.message}`);
+    console.error(`Error fetching user profile ${error.message}`);
     return NextResponse.json(
       {
         error: `Error fetching user profile: ${error.message}`,

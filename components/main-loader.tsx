@@ -1,4 +1,3 @@
-"use client";
 import { CustomLoader2 } from "./loader";
 
 export const MainLoader = () => {

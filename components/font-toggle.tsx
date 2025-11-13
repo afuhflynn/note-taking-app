@@ -16,12 +16,12 @@ export function FontToggle() {
   const setFont = (fontName: string) => {
     // setCurrentFont(fontName);
     document.documentElement.style.setProperty(
-      "--font-sans",
+      "font-familys",
       fontName === "Inter"
-        ? "var(--font-sans)"
+        ? "Inter_18pt-Medium"
         : fontName === "Source Code Pro"
-        ? "SourceCodePro-Regular, monospace"
-        : "NotoSerif-Regular, serif"
+        ? "SourceCodePro-Medium, monospace"
+        : "NotoSerif-Medium, serif"
     );
   };
 

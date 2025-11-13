@@ -1,28 +1,27 @@
 "use client"; // Ensure this is a client component
 
 import { Button } from "../ui/button";
-import { Github } from "lucide-react";
 
 // Use a client-safe function from a client library (for example, next-auth/react)
 import { FormEvent, useEffect } from "react";
-import { redirect } from "next/navigation";
 import { useUserStore } from "@/store/user.store";
 import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
+import Image from "next/image";
 
-export function GitHubButton() {
+export function GoogleButton() {
   const { setError, setMessage, loading } = useUserStore();
   // Client-side handler that calls a client-safe signIn method
-  const handleGitHubSignIn = async (event: FormEvent) => {
-    const toastId = toast.loading("Redirecting to GitHub...");
+  const handleGoogleSignIn = async (event: FormEvent) => {
+    const toastId = toast.loading("Redirecting to Google...");
     try {
       event.preventDefault();
       const { error } = await signIn.social({
-        provider: "github",
+        provider: "google",
         callbackURL: "/notes",
         errorCallbackURL: "/sign-in",
       });
-      setMessage("Github Sign in initiated. Redirecting...");
+      setMessage("Google Sign in initiated. Redirecting...");
 
       if (error) {
         setError(error.message);
@@ -38,15 +37,28 @@ export function GitHubButton() {
   };
 
   return (
-    <form onSubmit={handleGitHubSignIn} className="w-full h-auto">
+    <form onSubmit={handleGoogleSignIn} className="w-full h-auto">
       <Button
         variant="outline"
         type="submit"
         disabled={loading}
         className="w-full border-input rounded-xl flex items-center gap-3 py-5 hover:bg-muted"
       >
-        <Github className="w-auto h-auto dark:text-white" />
-        GitHub
+        <Image
+          src={"/icons/Google_Dark.svg"}
+          alt="Google icon"
+          width={24}
+          height={24}
+          className="hidden"
+        />
+        <Image
+          src={"/icons/Google_Light.svg"}
+          alt="Google icon"
+          width={24}
+          height={24}
+          className="dark:hidden"
+        />
+        Google
       </Button>
     </form>
   );

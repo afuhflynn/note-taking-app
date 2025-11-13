@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 import { resetPasswordSchemaServer } from "@/zod/zod.schema";
-import { logger } from "@/utils/logger";
 
 export const PUT = async (req: NextRequest) => {
   const { token, password } = await req.json();
@@ -22,6 +21,9 @@ export const PUT = async (req: NextRequest) => {
       where: {
         passwordResetToken: validatedCredentials.data.token,
         passwordResetTokenExpiresAt: { gt: new Date() },
+      },
+      include: {
+        accounts: true,
       },
     });
 
@@ -43,15 +45,46 @@ export const PUT = async (req: NextRequest) => {
         },
         { status: 500 }
       );
-    foundUser.password = pwdHash;
 
-    // Update user record in db
+    const account = foundUser.accounts[0];
+    if (!account) {
+      return NextResponse.json(
+        {
+          error: "No account found for the user.",
+        },
+        { status: 404 }
+      );
+    }
+
+    // Update user password fields
     const updatedUser = await prisma.user.update({
       where: {
-        email: foundUser.email as string,
+        id: foundUser.id,
       },
-      data: foundUser,
+      data: {
+        passwordResetToken: null,
+        passwordResetTokenExpiresAt: null,
+      },
     });
+
+    // Update user record in db
+    const updatedAccount = await prisma.account.update({
+      where: {
+        id: account.id,
+      },
+      data: {
+        password: pwdHash,
+      },
+    });
+
+    // Ensure account update was successful
+    if (!updatedAccount)
+      return NextResponse.json(
+        {
+          error: "Failed to update password. Please try again.",
+        },
+        { status: 500 }
+      );
 
     // Return user data
     return NextResponse.json({
@@ -60,7 +93,7 @@ export const PUT = async (req: NextRequest) => {
     });
     // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
   } catch (error: Error) {
-    logger.error(`Error resetting user password ${error.message}`);
+    console.error(`Error resetting user password ${error.message}`);
     return NextResponse.json(
       {
         error: `Error resetting password: ${error.message}`,

@@ -98,10 +98,11 @@ const config: Config = {
         md: "var(--radius-md)",
         sm: "var(--radius-sm)",
       },
-      fontFamily: {
-        sans: ["var(--font-sans)"],
-        mono: ["var(--font-mono)"],
-      },
+      // fontFamily: {
+      //   sans: ["var(--font-sans)"],
+      //   "source-code": ["var(--font-source-code-pro)"],
+      //   notoserif: ["var(--font-notoserif)"],
+      // },
       fontSize: {
         xs: [
           "var(--font-size-xs)",

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { emailVerificationSchema } from "@/zod/zod.schema";
-import { logger } from "@/utils/logger";
 
 export const POST = async (req: NextRequest) => {
   const { code } = await req.json();
@@ -37,23 +36,22 @@ export const POST = async (req: NextRequest) => {
         }
       );
 
-    // Update user db object
-    foundUser.emailVerified = new Date(Date.now());
-    foundUser.emailVerificationCodeExpiresAt = new Date(Date.now());
-    foundUser.emailVerificationCode = null;
-    foundUser.emailVerificationTokenExpiresAt = new Date(Date.now());
-    foundUser.emailVerificationToken = null;
-
     // Update db
     await prisma.user.update({
       where: {
         email: foundUser.email as string,
       },
-      data: foundUser,
+      data: {
+        emailVerified: true,
+        emailVerificationCodeExpiresAt: new Date(Date.now()),
+        emailVerificationCode: null,
+        emailVerificationTokenExpiresAt: new Date(Date.now()),
+        emailVerificationToken: null,
+      },
     });
 
     // Return user data
-    logger.log(
+    console.log(
       "success",
       `User, ${foundUser?.email} email verified successfully`
     );
@@ -62,7 +60,7 @@ export const POST = async (req: NextRequest) => {
     });
     // @ts-expect-error: error is of type 'unknown', casting to 'any' to access properties
   } catch (error: Error) {
-    logger.error(`Email verification failed ${error.message}`);
+    console.error(`Email verification failed ${error.message}`);
     return NextResponse.json(
       {
         error: `Email verification failed ${error.message}`,
