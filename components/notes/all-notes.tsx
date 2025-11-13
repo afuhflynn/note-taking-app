@@ -75,10 +75,10 @@ export const AllNotes = () => {
                   ))}
                 </div>
                 <p className="text-neutral-700 dark:text-neutral-200 font-light text-lg text-[12px]">
-                  {item.updatedAt.toDateString().split(" ") &&
-                    `${item.updatedAt.toDateString().split(" ")[2]} ${
-                      item.updatedAt.toDateString().split(" ")[1]
-                    } ${item.updatedAt.toDateString().split(" ")[3]}`}
+                  {new Date(item.updatedAt).toDateString().split(" ") &&
+                    `${new Date(item.updatedAt).toDateString().split(" ")[2]} ${
+                      new Date(item.updatedAt).toDateString().split(" ")[1]
+                    } ${new Date(item.updatedAt).toDateString().split(" ")[3]}`}
                 </p>
               </Link>
             ))}

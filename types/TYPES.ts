@@ -18,7 +18,7 @@ export interface AppStore {
   prefersTheme: string | "system" | "light" | "dark";
   setPrefersTheme: (value: string | "system" | "light" | "dark") => void;
   currentNote: CurrentNote | null;
-  setCurrentNote: (note: CurrentNote) => void;
+  setCurrentNote: (note: CurrentNote | null) => void;
   fetchCurrentNote: (noteId: string) => void;
   notes: Note[];
   setNotes: (notes: Note[]) => void;
