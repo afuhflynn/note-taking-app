@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get("query");
   const filter = searchParams.get("filter");
+  const tag = searchParams.get("tag");
 
   if (!session) {
     return NextResponse.json(
@@ -26,13 +27,8 @@ export async function GET(request: NextRequest) {
   let where = {} as any;
   where = {
     userId: session.user.id,
+    archived: filter === "archived" ? true : false,
   };
-
-  where.AND = [
-    {
-      archived: filter === "archived" ? true : false,
-    },
-  ];
 
   if (query && query.trim() !== "" && query !== null) {
     where.OR = [
@@ -55,6 +51,21 @@ export async function GET(request: NextRequest) {
         content: {
           contains: query as string,
           mode: "insensitive",
+        },
+      },
+    ];
+  }
+
+  if (tag && tag.trim() !== "" && tag !== null) {
+    console.log({ tag });
+    where.AND = [
+      {
+        tags: {
+          some: {
+            name: {
+              in: [tag],
+            },
+          },
         },
       },
     ];

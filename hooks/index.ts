@@ -37,9 +37,11 @@ export function useUserData() {
 export function useNotes({
   filter,
   query,
+  tag,
 }: {
   filter: string | null;
   query: string | null;
+  tag: string | null;
 }) {
   const {
     data: notes,
@@ -49,14 +51,14 @@ export function useNotes({
     isRefetching,
   } = useQuery({
     queryFn: async () => {
-      const paramsString = constrcutParams({ filter, query } as Record<
+      const paramsString = constrcutParams({ filter, query, tag } as Record<
         string,
         string
       >);
 
       return await api.note.getAll(paramsString);
     },
-    queryKey: ["user-notes", filter, query],
+    queryKey: ["user-notes", filter, query, tag],
     staleTime: 2 * 60 * 1000, // 2 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: true,

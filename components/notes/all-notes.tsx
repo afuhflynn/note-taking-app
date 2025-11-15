@@ -14,10 +14,11 @@ export const AllNotes = () => {
   const pathName = usePathname();
   const [params, setParams] = useQueryStates(searchParamsSchema);
 
-  const { filter, id: currentNoteId, query } = params;
+  const { filter, id: currentNoteId, query, tag } = params;
   const { notes, isPending, error, refetch, isRefetching } = useNotes({
     filter,
     query,
+    tag
   });
 
   return (
