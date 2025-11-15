@@ -20,7 +20,7 @@ export const NoteCanvas = () => {
     currentNoteId as string
   );
 
-  if (!note && !newNote) {
+  if (!note && !newNote && !isPending) {
     return (
       <div className="w-[588px] h-full flex-1 border-left padding md:pb-4 flex flex-col items-center justify-between !p-0">
         <SimpleEditor showThemeToggle={false} content={content} />

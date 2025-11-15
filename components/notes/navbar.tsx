@@ -129,7 +129,7 @@ export const NavBar = () => {
           </div>
           <h4 className="text-neutral-500 px-[8px] text-sm">Tags</h4>
           {!isPending && tags && tags.length > 0 ? (
-            <div className="flex flex-col items-start w-full gap-[4px]">
+            <div className="flex flex-col items-start w-full flex-1 max-h-[calc(100% - 164px)] overflow-auto gap-[4px]">
               {tags.map((item, index) => (
                 <Button
                   key={`${item.tagId}-${index}`}

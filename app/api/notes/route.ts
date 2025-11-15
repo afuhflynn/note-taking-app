@@ -28,9 +28,11 @@ export async function GET(request: NextRequest) {
     userId: session.user.id,
   };
 
-  if (filter && filter.trim() !== "" && filter !== null) {
-    where.archived = filter === "archived" ? true : false;
-  }
+  where.AND = [
+    {
+      archived: filter === "archived" ? true : false,
+    },
+  ];
 
   if (query && query.trim() !== "" && query !== null) {
     where.OR = [

@@ -105,6 +105,7 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
             value={newNote.title || ""}
             name="title"
             placeholder="Enter a title…"
+            autoFocus
             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
             className="dark:placeholder:text-[#F3F5F8] placeholder:text-[#2B303B] bg-transparent outline-none border-none text-[24px] font-bold"
           />

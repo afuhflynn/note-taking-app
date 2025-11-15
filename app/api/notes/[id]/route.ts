@@ -11,7 +11,7 @@ export async function GET(
   const session = await auth.api.getSession({ headers: await headers() });
   const { id } = await params;
 
-  if(!id){
+  if (!id) {
     return NextResponse.json(
       {
         error: "Note ID is required",
@@ -35,6 +35,7 @@ export async function GET(
       where: {
         userId: session.user.id,
         id,
+        archived: false,
       },
 
       select: {
