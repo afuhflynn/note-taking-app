@@ -96,10 +96,6 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
     }
   };
 
-  if (!newNote && !note) {
-    return null;
-  }
-
   return (
     <div className="w-full h-auto flex flex-col items-start border-[4px] border-b-muted border-x-0 border-t-0 pb-6">
       <div className="flex flex-col w-full h-full gap-4">
