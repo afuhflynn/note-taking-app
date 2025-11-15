@@ -1,19 +1,24 @@
 "use client";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAppStore } from "@/store/app.store";
 import { Suspense } from "react";
 import { useNotes } from "@/hooks";
+import { buildUrl, searchParamsSchema } from "../nuqs";
+import { SingleParserBuilder, useQueryStates } from "nuqs";
+import { parseDate } from "@/utils";
 
 export const AllNotes = () => {
   const { setCurrentNote, newNote, setNewNote } = useAppStore();
   const pathName = usePathname();
-  const searchParam = useSearchParams();
-  const currentNoteId = searchParam.get("id");
-  const { notes, isPending, error, refetch, isRefetching } = useNotes();
+  const [params, setParams] = useQueryStates(searchParamsSchema);
 
-  // console.log(pathName, currentNote?.replace(/["-"]/g, " "));
+  const { filter, id: currentNoteId, query } = params;
+  const { notes, isPending, error, refetch, isRefetching } = useNotes({
+    filter,
+    query,
+  });
 
   return (
     <Suspense fallback={null}>
@@ -24,7 +29,7 @@ export const AllNotes = () => {
             size={"lg"}
             onClick={() =>
               setNewNote({
-                title: "untitled note",
+                title: "",
               })
             }
           >
@@ -35,10 +40,10 @@ export const AllNotes = () => {
         </div>
         {newNote && (
           <div className="text-[16px] p-[8px] rounded-[6px] bg-secondary text-secondary-foreground font-bold capitalize">
-            {newNote.title}
+            {newNote.title || "Untitled Note"}
           </div>
         )}
-        {pathName === "/notes/archived" && (
+        {filter === "archived" && (
           <div className="w-full h-auto mb-2">
             All your archived notes are stored here. You can restore or delete
             them anytime.
@@ -51,10 +56,13 @@ export const AllNotes = () => {
                 key={item.id}
                 onClick={() => setCurrentNote(item)}
                 prefetch
-                href={`${pathName}?note=${item.title
-                  .toLowerCase()
-                  .trim()
-                  .replace(/[" "]/g, "-")}&id=${item.id}`}
+                href={buildUrl(
+                  pathName,
+                  {
+                    id: item.id as unknown as SingleParserBuilder<string>,
+                  },
+                  params
+                )}
                 className={`min-h-[110px] h-auto w-[242] rounded-[6px] p-[8px] gap-[12px] flex flex-col items-start ${
                   item.id === currentNoteId
                     ? "bg-neutral-100 dark:bg-neutral-800"
@@ -68,35 +76,32 @@ export const AllNotes = () => {
                   {item.tags.map((item) => (
                     <span
                       key={item.tagId}
-                      className="text-neutral-950 dark:text-white font-light rounded-[4px] bg-neutral-200 dark:bg-neutral-600 px-[6px] py-[2px] capitalize"
+                      className="text-neutral-950 dark:text-white font-light rounded-[4px] bg-neutral-200 dark:bg-neutral-600 px-[6px] py-[2px]"
                     >
-                      {item.name.toLowerCase()}
+                      {item.name.replaceAll(" ", "-")}
                     </span>
                   ))}
                 </div>
                 <p className="text-neutral-700 dark:text-neutral-200 font-light text-lg text-[12px]">
-                  {new Date(item.updatedAt).toDateString().split(" ") &&
-                    `${new Date(item.updatedAt).toDateString().split(" ")[2]} ${
-                      new Date(item.updatedAt).toDateString().split(" ")[1]
-                    } ${new Date(item.updatedAt).toDateString().split(" ")[3]}`}
+                  {parseDate(item.updatedAt)}
                 </p>
               </Link>
             ))}
           </div>
         ) : (
           <div className="w-full h-auto p-[8px] rounded-[8px] bg-[#F3F5F8] dark:bg-[#232530] text-[14px]">
-            {pathName !== "/notes/archived" ? (
-              <span>
-                You don’t have any notes yet. Start a new note to capture your
-                thoughts and ideas.
-              </span>
-            ) : (
+            {filter === "archived" ? (
               <span>
                 No notes have been archived yet. Move notes here for
                 safekeeping, or{" "}
                 <Link href="/notes" className="underline">
                   create a new note.
                 </Link>
+              </span>
+            ) : (
+              <span>
+                You don’t have any notes yet. Start a new note to capture your
+                thoughts and ideas.
               </span>
             )}
           </div>

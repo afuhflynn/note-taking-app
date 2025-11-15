@@ -1,0 +1,28 @@
+version: 'latest'
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio_notes_db
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin_db
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9005:9000"
+    command: server /data
+
+  postgres:
+    image: postgres:17.5
+    container_name: notes_app_db
+    environment:
+      POSTGRES_PASSWORD: postgres_db
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres_notes_data:/data
+    ports:
+      - "9004:5432"
+
+volumes:
+  minio_data:
+  postgres_notes_data:

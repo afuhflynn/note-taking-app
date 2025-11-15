@@ -19,15 +19,26 @@ export interface AppStore {
   setPrefersTheme: (value: string | "system" | "light" | "dark") => void;
   currentNote: CurrentNote | null;
   setCurrentNote: (note: CurrentNote | null) => void;
-  fetchCurrentNote: (noteId: string) => void;
   notes: Note[];
   setNotes: (notes: Note[]) => void;
   newNote: NewNotes | null;
   setNewNote: (newNote: NewNotes | null) => void;
+  isEditingTitle: boolean;
+  setIsEditingTitle: (isEditingTitle: boolean) => void;
+  isEditingTags: boolean;
+  setIsEditingTags: (isEditingTags: boolean) => void;
+  isEditingContent: boolean;
+  setIsEditingContent: (isEditingContent: boolean) => void;
+  editTitle: string;
+  setEditTitle: (editTitle: string) => void;
+  editTags: string;
+  setEditTags: (editTags: string) => void;
+  editContent: string;
+  setEditContent: (editContent: string) => void;
 }
 
 export interface NewNotes {
-  title: string;
+  title?: string;
   content?: string;
   tags?: string;
 }

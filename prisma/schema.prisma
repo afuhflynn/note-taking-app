@@ -42,7 +42,6 @@ model User {
   accounts                        Account[]
   userSettings                    UserSetting[]
   notes                           Note[]
-  tags                            Tag[]
   noteHistories                   NoteHistory[]
 
   @@unique([email])
@@ -100,39 +99,34 @@ model UserSetting {
   prefersFont      PrefersFont  @default(SANS_SERIF)
   otherPreferences Json
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  tagId     String   @id @default(cuid())
+  name      String   @unique // Make name globally unique
+  createdAt DateTime @default(now())
+
+  // Relations
+  notes Note[]
 }
 
 model Note {
   id           String   @id @default(cuid())
   userId       String
   title        String
+  slug         String   @unique
   content      String?
   archived     Boolean  @default(false)
-  parentNoteId String?  @unique // Optional for nested notes
+  parentNoteId String?  @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())
 
-  // Relations
-  user     User   @relation(fields: [userId], references: [id])
-  parent   Note?  @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children Note[] @relation("NoteToChildren")
-
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent      Note?         @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    Note[]        @relation("NoteToChildren")
   noteHistory NoteHistory[]
   tags        Tag[]
-}
-
-model Tag {
-  tagId  String  @id @default(cuid())
-  name   String
-  userId String?
-  noteId String
-
-  // Relations
-  user User? @relation(fields: [userId], references: [id])
-  note Note  @relation(fields: [noteId], references: [id])
-
-  @@unique([name, userId])
 }
 
 model NoteHistory {
@@ -142,7 +136,7 @@ model NoteHistory {
   contentSnapshot String
   updatedAt       DateTime @default(now())
 
-  note   Note    @relation(fields: [noteId], references: [id])
-  User   User?   @relation(fields: [userId], references: [id])
+  note   Note    @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String?
 }

@@ -6,10 +6,11 @@
  * =================================
  */
 
+import { searchParamsSchema } from "@/components/nuqs";
 import { privateAxios } from "@/config/axios.config";
 import { API_BASE } from "@/constants";
 import { CurrentNote, NewNotes } from "@/types/TYPES";
-import { Note, User } from "@prisma/client";
+import { Note, Tag, User } from "@prisma/client";
 
 // Helper function for making authenticated requests
 async function apiRequest<T>(
@@ -27,10 +28,10 @@ async function apiRequest<T>(
           options.body ?? {}
         );
 
-        const data = response.data;
+        const data = response?.data;
         return data;
       } catch (error: Error | any) {
-        if (error.response.data) throw new Error(error.response.data.error);
+        if (error.response?.data) throw new Error(error.response?.data.error);
         else throw new Error("Sorry, an unexpected error occurred");
       }
       break;
@@ -42,10 +43,10 @@ async function apiRequest<T>(
           options.body ?? {}
         );
 
-        const data = response.data;
+        const data = response?.data;
         return data;
       } catch (error: Error | any) {
-        if (error.response.data) throw new Error(error.response.data.error);
+        if (error.response?.data) throw new Error(error.response?.data.error);
         else throw new Error("Sorry, an unexpected error occurred");
       }
       break;
@@ -56,10 +57,10 @@ async function apiRequest<T>(
           endpoint,
           options.body ?? {}
         );
-        const data = response.data;
+        const data = response?.data;
         return data;
       } catch (error: Error | any) {
-        if (error.response.data) throw new Error(error.response.data.error);
+        if (error.response?.data) throw new Error(error.response?.data.error);
         else throw new Error("Sorry, an unexpected error occurred");
       }
       break;
@@ -70,10 +71,10 @@ async function apiRequest<T>(
           endpoint,
           options.body ?? {}
         );
-        const data = response.data;
+        const data = response?.data;
         return data;
       } catch (error: Error | any) {
-        if (error.response.data) throw new Error(error.response.data.error);
+        if (error.response?.data) throw new Error(error.response?.data.error);
         else throw new Error("Sorry, an unexpected error occurred");
       }
       break;
@@ -84,10 +85,10 @@ async function apiRequest<T>(
           endpoint,
           options.body ?? {}
         );
-        const data = response.data;
+        const data = response?.data;
         return data;
       } catch (error: Error | any) {
-        if (error.response.data) throw new Error(error.response.data.error);
+        if (error.response?.data) throw new Error(error.response?.data.error);
         else throw new Error("Sorry, an unexpected error occurred");
       }
       break;
@@ -108,15 +109,18 @@ export const api = {
       }),
   },
   note: {
-    getAll: async () =>
-      await apiRequest<CurrentNote[]>("/notes", {
+    getAll: async (params: any) =>
+      await apiRequest<CurrentNote[]>(`/notes?${params}`, {
         method: "GET",
       }),
 
-    getSingle: async ({ nodeId }: { nodeId: string }) =>
-      await apiRequest<CurrentNote>(`/notes/${nodeId}`, { method: "GET" }),
+    getSingle: async ({ noteId }: { noteId: string }) =>
+      await apiRequest<CurrentNote>(`/notes/${noteId}`, { method: "GET" }),
 
     create: async (data: NewNotes) =>
       apiRequest<Note>("/notes", { method: "POST", body: data }),
+  },
+  tag: {
+    getAll: async () => await apiRequest<Tag[]>("/tags", { method: "GET" }),
   },
 };

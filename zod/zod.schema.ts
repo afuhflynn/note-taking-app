@@ -47,13 +47,16 @@ export const signUpSchema = z.object({
     .max(20, {
       message: "Password must be at most 20 characters.",
     }),
-    name: z.string({
+  name: z
+    .string({
       message: "Please enter a name to proceed.",
-    }).min(1, {
-      message: "A valid name must contain atleast 1 character."
-    }).max(30, {
-      message: "A valid name must not be more than 30 characters."
     })
+    .min(1, {
+      message: "A valid name must contain atleast 1 character.",
+    })
+    .max(30, {
+      message: "A valid name must not be more than 30 characters.",
+    }),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -216,4 +219,27 @@ export const deleteAccountSchemaServer = z.object({
     .min(1, {
       message: "A valid email must be at least 1 character",
     }),
+});
+
+export const creatNoteSchema = z.object({
+  title: z
+    .string({
+      message: "At least a note title must be provided to create a note.",
+    })
+    .min(4, {
+      message: "A valid note title must be at least 4 characters.",
+    })
+    .max(200, {
+      message: "A valid note title must be a maximum of 200 characters",
+    }),
+  tags: z
+    .string()
+    .max(400, {
+      message: "A valid note tags must not be more than 400 characters",
+    })
+    .min(1, {
+      message: "A valid note tags must be at least 1 character.",
+    })
+    .optional(),
+  content: z.any().optional(),
 });

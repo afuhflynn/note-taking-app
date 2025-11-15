@@ -11,6 +11,16 @@ export async function GET(
   const session = await auth.api.getSession({ headers: await headers() });
   const { id } = await params;
 
+  if(!id){
+    return NextResponse.json(
+      {
+        error: "Note ID is required",
+        success: false,
+      },
+      { status: 400 }
+    );
+  }
+
   if (!session) {
     return NextResponse.json(
       {
@@ -35,7 +45,6 @@ export async function GET(
         tags: {
           select: {
             tagId: true,
-            noteId: true,
             name: true,
           },
         },

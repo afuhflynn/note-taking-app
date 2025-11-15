@@ -1,8 +1,7 @@
-import { dummyNoteItems } from "@/constants";
 import { AppStore, CurrentNote } from "@/types/TYPES";
 import { create } from "zustand";
 
-export const useAppStore = create<AppStore>((set) => ({
+export const useAppStore = create<AppStore>((set, get) => ({
   prefersTheme: "system",
   setPrefersTheme(value) {
     set({ prefersTheme: value });
@@ -21,11 +20,30 @@ export const useAppStore = create<AppStore>((set) => ({
     set({ newNote });
   },
 
-  fetchCurrentNote(noteId) {
-    // @ts-ignore // TODO: remove this later
-    const note = dummyNoteItems.find(
-      (item) => item.id === noteId
-    ) as CurrentNote;
-    set({ currentNote: note });
+  isEditingContent: false,
+  setIsEditingContent(isEditingContent) {
+    set({ isEditingContent });
+  },
+  isEditingTags: false,
+  setIsEditingTags(isEditingTags) {
+    set({ isEditingTags });
+  },
+  isEditingTitle: false,
+  setIsEditingTitle(isEditingTitle) {
+    set({ isEditingTitle });
+  },
+
+  editTags: "",
+  setEditTags(editTags) {
+    set({ editTags });
+  },
+  editTitle: "",
+  setEditTitle(editTitle) {
+    set({ editTitle });
+  },
+
+  editContent: "",
+  setEditContent(editContent) {
+    set({ editContent });
   },
 }));

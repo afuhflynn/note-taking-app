@@ -1,12 +1,15 @@
+import { searchParamsSchema } from "@/components/nuqs";
 import { api } from "@/lib/api-client";
 import { useAppStore } from "@/store/app.store";
 import { CurrentNote, NewNotes } from "@/types/TYPES";
+import { constrcutParams } from "@/utils";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useQueryStates } from "nuqs";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
-const queryClient = new QueryClient();
-
+// ==================== USER DATA ====================
 export function useUserData() {
   const {
     data: user,
@@ -30,7 +33,14 @@ export function useUserData() {
   };
 }
 
-export function useNotes() {
+// ==================== GET ALL NOTES ====================
+export function useNotes({
+  filter,
+  query,
+}: {
+  filter: string | null;
+  query: string | null;
+}) {
   const {
     data: notes,
     isPending,
@@ -38,13 +48,20 @@ export function useNotes() {
     refetch,
     isRefetching,
   } = useQuery({
-    queryFn: api.note.getAll,
-    queryKey: ["user-notes"],
-    gcTime: 0,
-    staleTime: 30 * 60 * 1000, // 30 mins
-  });
+    queryFn: async () => {
+      const paramsString = constrcutParams({ filter, query } as Record<
+        string,
+        string
+      >);
 
-  console.log({ notes });
+      return await api.note.getAll(paramsString);
+    },
+    queryKey: ["user-notes", filter, query],
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
 
   return {
     notes,
@@ -55,25 +72,30 @@ export function useNotes() {
   };
 }
 
+// ==================== CREATE NOTE ====================
 export function useCreateNote(data: NewNotes) {
-  const { setNewNote, setCurrentNote } = useAppStore();
+  const { setNewNote } = useAppStore();
   const router = useRouter();
+  const queryClient = new QueryClient();
+
   const { mutate, error, isPending } = useMutation({
     mutationFn: async () => await api.note.create(data),
-    mutationKey: ["create-note", data.content],
-    onSuccess(data) {
-      console.log({ data });
+    mutationKey: ["create-note", data?.content],
+    onSuccess: async (response) => {
+      // Invalidate and refetch to ensure UI updates
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["user-notes"] }),
+        queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] }),
+      ]);
 
-      queryClient.invalidateQueries({ queryKey: ["user-notes"] });
-      toast.success("Note created succesfully");
-      router.push(
-        `/notes?note=${data?.title.replaceAll(" ", "-")}&id=${data?.id}`
-      );
-      setCurrentNote(data as CurrentNote);
+      toast.success("Note created successfully");
       setNewNote(null);
+
+      // Navigate to the new note
+      router.push(`/notes?id=${response?.id}`);
     },
-    onError(error) {
-      toast.error(error.message);
+    onError(error: any) {
+      toast.error(error?.message || "Failed to create note");
     },
   });
 
@@ -83,3 +105,231 @@ export function useCreateNote(data: NewNotes) {
     error,
   };
 }
+
+// ==================== GET SINGLE NOTE ====================
+export function useNote(noteId: string, isEditing: boolean = false) {
+  const { setCurrentNote } = useAppStore();
+  const {
+    data: note,
+    isPending,
+    error,
+    refetch,
+    isRefetching,
+  } = useQuery({
+    queryFn: async () => await api.note.getSingle({ noteId }),
+    queryKey: ["note", noteId],
+    staleTime: 1 * 60 * 1000, // 1 minute
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: isEditing ? 30000 : false, // Poll every 30s while editing
+    enabled: !!noteId,
+  });
+
+  useEffect(() => {
+    if (note) {
+      setCurrentNote(note as CurrentNote);
+    }
+  }, [note, setCurrentNote]);
+
+  return {
+    note,
+    isPending,
+    error,
+    refetch,
+    isRefetching,
+  };
+}
+
+// ==================== UPDATE NOTE ====================
+// export function useUpdateNote() {
+//   const queryClient = useQueryClient();
+//   const { setCurrentNote } = useAppStore();
+
+//   const { mutate, mutateAsync, error, isPending } = useMutation({
+//     mutationFn: async (data: UpdateNoteData) => await api.note.update(data),
+
+//     // Optimistic update for instant UI feedback
+//     onMutate: async (updatedNote) => {
+//       // Cancel any outgoing refetches
+//       await queryClient.cancelQueries({ queryKey: ["note", updatedNote.id] });
+//       await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+
+//       // Snapshot the previous values
+//       const previousNote = queryClient.getQueryData(["note", updatedNote.id]);
+//       const previousNotes = queryClient.getQueryData(["user-notes"]);
+
+//       // Optimistically update single note
+//       queryClient.setQueryData(["note", updatedNote.id], (old: any) => ({
+//         ...old,
+//         ...updatedNote,
+//         updatedAt: new Date().toISOString(),
+//       }));
+
+//       // Optimistically update notes list
+//       queryClient.setQueryData(["user-notes"], (old: any) => {
+//         if (!old) return old;
+//         return old.map((note: any) =>
+//           note.id === updatedNote.id
+//             ? { ...note, ...updatedNote, updatedAt: new Date().toISOString() }
+//             : note
+//         );
+//       });
+
+//       // Update current note in store
+//       setCurrentNote((prev: any) => ({
+//         ...prev,
+//         ...updatedNote,
+//         updatedAt: new Date().toISOString(),
+//       }));
+
+//       return { previousNote, previousNotes };
+//     },
+
+//     onError: (err, updatedNote, context) => {
+//       // Rollback on error
+//       if (context?.previousNote) {
+//         queryClient.setQueryData(
+//           ["note", updatedNote.id],
+//           context.previousNote
+//         );
+//       }
+//       if (context?.previousNotes) {
+//         queryClient.setQueryData(["user-notes"], context.previousNotes);
+//       }
+
+//       toast.error("Failed to update note");
+//     },
+
+//     onSuccess: (data, variables) => {
+//       toast.success("Note updated successfully");
+
+//       // Update with server response
+//       queryClient.setQueryData(["note", variables.id], data);
+//     },
+
+//     onSettled: (data, error, variables) => {
+//       // Always refetch to ensure sync with server
+//       queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
+//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+//       queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
+//     },
+//   });
+
+//   return {
+//     update: mutate,
+//     updateAsync: mutateAsync,
+//     isPending,
+//     error,
+//   };
+// }
+
+// ==================== DELETE NOTE ====================
+// export function useDeleteNote() {
+//   const queryClient = useQueryClient();
+//   const router = useRouter();
+
+//   const { mutate, error, isPending } = useMutation({
+//     mutationFn: async (noteId: string) => await api.note.delete({ noteId }),
+
+//     onMutate: async (noteId) => {
+//       // Cancel queries
+//       await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+
+//       // Snapshot
+//       const previousNotes = queryClient.getQueryData(["user-notes"]);
+
+//       // Optimistically remove from list
+//       queryClient.setQueryData(["user-notes"], (old: any) => {
+//         if (!old) return old;
+//         return old.filter((note: any) => note.id !== noteId);
+//       });
+
+//       return { previousNotes };
+//     },
+
+//     onError: (err, noteId, context) => {
+//       // Rollback
+//       if (context?.previousNotes) {
+//         queryClient.setQueryData(["user-notes"], context.previousNotes);
+//       }
+//       toast.error("Failed to delete note");
+//     },
+
+//     onSuccess: (data, noteId) => {
+//       toast.success("Note deleted successfully");
+
+//       // Remove from cache
+//       queryClient.removeQueries({ queryKey: ["note", noteId] });
+
+//       // Navigate away
+//       router.push("/notes");
+//     },
+
+//     onSettled: () => {
+//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+//       queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
+//     },
+//   });
+
+//   return {
+//     deleteNote: mutate,
+//     isPending,
+//     error,
+//   };
+// }
+
+// ==================== GET ALL TAGS ====================
+export function useTags() {
+  const {
+    data: tags,
+    isPending,
+    error,
+    refetch,
+    isRefetching,
+  } = useQuery({
+    queryFn: api.tag.getAll,
+    queryKey: ["user-notes-tags"],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
+
+  return {
+    tags,
+    isPending,
+    error,
+    refetch,
+    isRefetching,
+  };
+}
+
+// export function useUpdateNote() {
+//   const queryClient = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: api.note.update,
+//     onMutate: async (newNote) => {
+//       // Cancel outgoing refetches
+//       await queryClient.cancelQueries({ queryKey: ["note", newNote.id] });
+
+//       // Snapshot previous value
+//       const previousNote = queryClient.getQueryData(["note", newNote.id]);
+
+//       // Optimistically update
+//       queryClient.setQueryData(["note", newNote.id], newNote);
+
+//       return { previousNote };
+//     },
+//     onError: (err, newNote, context) => {
+//       // Rollback on error
+//       queryClient.setQueryData(["note", newNote.id], context?.previousNote);
+//     },
+//     onSettled: (data, error, variables) => {
+//       // Refetch to ensure sync
+//       queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
+//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+//     },
+//   });
+// }
