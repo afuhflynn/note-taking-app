@@ -6,9 +6,7 @@
  * =================================
  */
 
-import { searchParamsSchema } from "@/components/nuqs";
 import { privateAxios } from "@/config/axios.config";
-import { API_BASE } from "@/constants";
 import { CurrentNote, NewNotes } from "@/types/TYPES";
 import { Note, Tag, User } from "@prisma/client";
 

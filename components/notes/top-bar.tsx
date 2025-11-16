@@ -1,5 +1,4 @@
 import { SearchBar } from "./search";
-import { usePathname } from "next/navigation";
 import { Settings } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -8,11 +7,9 @@ import { useQueryStates } from "nuqs";
 import { searchParamsSchema } from "../nuqs";
 
 export const TopBar = () => {
-  const pathName = usePathname();
+  const [params] = useQueryStates(searchParamsSchema);
 
-  const [params, setParams] = useQueryStates(searchParamsSchema);
-
-  const { tag, id: noteId, filter } = params;
+  const { tag, filter } = params;
 
   return (
     <Suspense fallback={null}>

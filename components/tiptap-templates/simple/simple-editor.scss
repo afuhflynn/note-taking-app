@@ -72,10 +72,16 @@ body,
   height: 100%;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1
 }
 .inner-editor-content{
   max-width: 100%;
+}
+
+.outer-editor-content{
+  max-width: 848px;
+  height: 100vh;
+  width: 100vw;
 }
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {

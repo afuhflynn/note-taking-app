@@ -116,7 +116,8 @@ model Note {
   userId       String
   title        String
   slug         String   @unique
-  content      String?
+  content      Json?
+  size         BigInt?  @default(0)
   archived     Boolean  @default(false)
   parentNoteId String?  @unique
   createdAt    DateTime @default(now())

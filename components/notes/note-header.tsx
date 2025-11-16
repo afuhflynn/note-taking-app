@@ -2,7 +2,7 @@ import { useNote } from "@/hooks";
 import { useAppStore } from "@/store/app.store";
 import { parseDate } from "@/utils";
 import { Clock, Tag } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 export const NoteHeader = ({ noteId }: { noteId: string }) => {
   const {
@@ -18,8 +18,6 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
     editTags,
     currentNote: note,
   } = useAppStore();
-  const { isPending, error } = useNote(noteId);
-
   // Refs for auto-focus
   const titleInputRef = useRef<HTMLInputElement>(null);
   const tagsInputRef = useRef<HTMLInputElement>(null);
@@ -95,6 +93,10 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
       setIsEditingTags(false);
     }
   };
+
+  if (!note && !newNote) {
+    return null;
+  }
 
   return (
     <div className="w-full h-auto flex flex-col items-start border-[4px] border-b-muted border-x-0 border-t-0 pb-6">

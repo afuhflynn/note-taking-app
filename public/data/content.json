@@ -163,10 +163,10 @@
     {
       "type": "image",
       "attrs": {
-        "src": "/images/tiptap-ui-placeholder-image.png",
+        "src": "/images/notes-ui-placeholder-image.png",
         "alt": "placeholder-image",
         "title": "placeholder-image",
-        "width": "1200px",
+        "width": "100%",
         "height": "800px"
       }
     },

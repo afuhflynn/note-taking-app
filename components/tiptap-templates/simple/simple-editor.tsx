@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import {
+  EditorContent,
+  EditorContext,
+  useEditor,
+  useEditorState,
+} from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -71,6 +76,7 @@ import { cn, handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAppStore } from "@/store/app.store";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -83,6 +89,7 @@ const MainToolbarContent = ({
   isMobile: boolean;
   showThemeToggle: boolean;
 }) => {
+  const { newNote, currentNote } = useAppStore();
   return (
     <>
       <Spacer />
@@ -138,9 +145,11 @@ const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
-      </ToolbarGroup>
+      {(newNote || currentNote) && (
+        <ToolbarGroup>
+          <ImageUploadButton text="Add" />
+        </ToolbarGroup>
+      )}
 
       <Spacer />
 
@@ -239,6 +248,20 @@ export function SimpleEditor({
     ],
     content: content || "",
   });
+
+  // useEditorState({
+  //   editor,
+  //   selector(context) {
+  //     console.log({
+  //       size: context.editor?.$doc.content.size,
+  //       content: context.editor?.$doc.content.content,
+  //       json: context.editor?.$doc.content.toJSON(),
+  //       string: context.editor?.$doc.content.toString(),
+  //       commands: context.editor?.commands,
+  //       join: context.editor?.$doc.content.content.join(),
+  //     });
+  //   },
+  // });
 
   const rect = useCursorVisibility({
     editor,

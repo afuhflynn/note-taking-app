@@ -1,12 +1,13 @@
 import { Search } from "lucide-react";
-import { debounce, useQueryStates } from "nuqs";
-import { useState, useTransition, use, useEffect } from "react";
+import { useQueryStates } from "nuqs";
+import { useState, useEffect } from "react";
 import { searchParamsSchema } from "../nuqs";
 
 export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isPending, startTransition] = useTransition();
-  const [_, setParams] = useQueryStates(searchParamsSchema);
+  const [params, setParams] = useQueryStates(searchParamsSchema);
+
+  console.log(params);
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {

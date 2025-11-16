@@ -12,11 +12,11 @@ export const Controls = () => {
 
   console.log({ currentNote });
   return (
-    <div className="scroll-view w-[258px] h-full overflow-auto padding p-[20px] pr-0 flex flex-col items-center gap-[12px] !pt-12">
+    <div className="scroll-view w-[258px] h-full overflow-auto padding p-[20px] !pr-0 flex flex-col items-center gap-[12px] !pt-12">
       <Button
         variant={"outline"}
         size={"lg"}
-        className="flex items-center justify-start h-[44px] w-[242px] rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
+        className="flex items-center justify-start h-[44px] w-full rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
       >
         <Image
           src="/icons/Refresh_Light.svg"
@@ -38,7 +38,7 @@ export const Controls = () => {
       <Button
         variant={"outline"}
         size={"lg"}
-        className="flex items-center justify-start h-[44px] w-[242px] rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
+        className="flex items-center justify-start h-[44px] w-full rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
       >
         <Image
           src="/icons/Archive_Light.svg"
@@ -60,7 +60,7 @@ export const Controls = () => {
       <Button
         variant={"outline"}
         size={"lg"}
-        className="flex items-center justify-start h-[44px] w-[242px] rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
+        className="flex items-center justify-start h-[44px] w-full rounded-[8px] px-[16px] py-[12px] gap-[8px] hover:bg-muted border"
       >
         <Image
           src="/icons/Delete_Light.svg"
