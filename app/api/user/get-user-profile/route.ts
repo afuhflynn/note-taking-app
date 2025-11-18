@@ -5,7 +5,6 @@ import { headers } from "next/headers";
 
 export const GET = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
-  console.log(session);
 
   try {
     if (!session?.user) {

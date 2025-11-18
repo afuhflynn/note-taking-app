@@ -1,11 +1,15 @@
 import { searchParamsSchema } from "@/components/nuqs";
 import { api } from "@/lib/api-client";
 import { useAppStore } from "@/store/app.store";
-import { CurrentNote, NewNotes } from "@/types/TYPES";
+import { CurrentNote, NewNotes, UpdateNoteData } from "@/types/TYPES";
 import { constrcutParams } from "@/utils";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useQueryStates } from "nuqs";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -80,9 +84,9 @@ export function useCreateNote(data: NewNotes) {
   const router = useRouter();
   const queryClient = new QueryClient();
 
-  const { mutate, error, isPending } = useMutation({
+  const { mutate, error, isPending, mutateAsync } = useMutation({
     mutationFn: async () => await api.note.create(data),
-    mutationKey: ["create-note", data?.content],
+    mutationKey: ["create-note", data?.title],
     onSuccess: async (response) => {
       // Invalidate and refetch to ensure UI updates
       await Promise.all([
@@ -103,6 +107,7 @@ export function useCreateNote(data: NewNotes) {
 
   return {
     create: mutate,
+    createAsync: mutateAsync,
     isPending,
     error,
   };
@@ -144,87 +149,66 @@ export function useNote(noteId: string, isEditing: boolean = false) {
 }
 
 // ==================== UPDATE NOTE ====================
-// export function useUpdateNote() {
-//   const queryClient = useQueryClient();
-//   const { setCurrentNote } = useAppStore();
+export function useUpdateNote() {
+  const queryClient = useQueryClient();
+  const { setCurrentNote } = useAppStore();
 
-//   const { mutate, mutateAsync, error, isPending } = useMutation({
-//     mutationFn: async (data: UpdateNoteData) => await api.note.update(data),
+  const { mutate, mutateAsync, error, isPending } = useMutation({
+    mutationFn: async (data: UpdateNoteData) =>
+      await api.note.update(data, data.id),
 
-//     // Optimistic update for instant UI feedback
-//     onMutate: async (updatedNote) => {
-//       // Cancel any outgoing refetches
-//       await queryClient.cancelQueries({ queryKey: ["note", updatedNote.id] });
-//       await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+    // Optimistic update for instant UI feedback
+    onMutate: async (updatedNote) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["note", updatedNote.id] });
+      await queryClient.cancelQueries({ queryKey: ["user-notes"] });
 
-//       // Snapshot the previous values
-//       const previousNote = queryClient.getQueryData(["note", updatedNote.id]);
-//       const previousNotes = queryClient.getQueryData(["user-notes"]);
+      // Snapshot the previous values
+      const previousNote = queryClient.getQueryData(["note", updatedNote.id]);
+      const previousNotes = queryClient.getQueryData(["user-notes"]);
 
-//       // Optimistically update single note
-//       queryClient.setQueryData(["note", updatedNote.id], (old: any) => ({
-//         ...old,
-//         ...updatedNote,
-//         updatedAt: new Date().toISOString(),
-//       }));
+      return { previousNote, previousNotes };
+    },
 
-//       // Optimistically update notes list
-//       queryClient.setQueryData(["user-notes"], (old: any) => {
-//         if (!old) return old;
-//         return old.map((note: any) =>
-//           note.id === updatedNote.id
-//             ? { ...note, ...updatedNote, updatedAt: new Date().toISOString() }
-//             : note
-//         );
-//       });
+    onError: (err, updatedNote, context) => {
+      // Rollback on error
+      if (context?.previousNote) {
+        queryClient.setQueryData(
+          ["note", updatedNote.id],
+          context.previousNote
+        );
+      }
+      if (context?.previousNotes) {
+        queryClient.setQueryData(["user-notes"], context.previousNotes);
+      }
 
-//       // Update current note in store
-//       setCurrentNote((prev: any) => ({
-//         ...prev,
-//         ...updatedNote,
-//         updatedAt: new Date().toISOString(),
-//       }));
+      toast.error("Failed to save note");
+    },
 
-//       return { previousNote, previousNotes };
-//     },
+    onSuccess: (data, variables) => {
+      toast.success("Note saved successfully");
 
-//     onError: (err, updatedNote, context) => {
-//       // Rollback on error
-//       if (context?.previousNote) {
-//         queryClient.setQueryData(
-//           ["note", updatedNote.id],
-//           context.previousNote
-//         );
-//       }
-//       if (context?.previousNotes) {
-//         queryClient.setQueryData(["user-notes"], context.previousNotes);
-//       }
+      // Update current note in store
+      setCurrentNote(data);
+      // Update with server response
+      queryClient.setQueryData(["note", variables.id], data);
+    },
 
-//       toast.error("Failed to update note");
-//     },
+    onSettled: (data, error, variables) => {
+      // Always refetch to ensure sync with server
+      queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
+    },
+  });
 
-//     onSuccess: (data, variables) => {
-//       toast.success("Note updated successfully");
-
-//       // Update with server response
-//       queryClient.setQueryData(["note", variables.id], data);
-//     },
-
-//     onSettled: (data, error, variables) => {
-//       // Always refetch to ensure sync with server
-//       queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
-//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
-//       queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
-//     },
-//   });
-
-//   return {
-//     update: mutate,
-//     updateAsync: mutateAsync,
-//     isPending,
-//     error,
-//   };
-// }
+  return {
+    update: mutate,
+    updateAsync: mutateAsync,
+    isPending,
+    error,
+  };
+}
 
 // ==================== DELETE NOTE ====================
 // export function useDeleteNote() {
@@ -306,32 +290,3 @@ export function useTags() {
     isRefetching,
   };
 }
-
-// export function useUpdateNote() {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: api.note.update,
-//     onMutate: async (newNote) => {
-//       // Cancel outgoing refetches
-//       await queryClient.cancelQueries({ queryKey: ["note", newNote.id] });
-
-//       // Snapshot previous value
-//       const previousNote = queryClient.getQueryData(["note", newNote.id]);
-
-//       // Optimistically update
-//       queryClient.setQueryData(["note", newNote.id], newNote);
-
-//       return { previousNote };
-//     },
-//     onError: (err, newNote, context) => {
-//       // Rollback on error
-//       queryClient.setQueryData(["note", newNote.id], context?.previousNote);
-//     },
-//     onSettled: (data, error, variables) => {
-//       // Refetch to ensure sync
-//       queryClient.invalidateQueries({ queryKey: ["note", variables.id] });
-//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
-//     },
-//   });
-// }

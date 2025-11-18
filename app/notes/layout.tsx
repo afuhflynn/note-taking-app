@@ -10,9 +10,5 @@ export default function NoteLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className="w-screen h-screen font-noto-serif-regular paddingX">
-      {children}
-    </div>
-  );
+  return <div className="w-screen h-screen paddingX">{children}</div>;
 }

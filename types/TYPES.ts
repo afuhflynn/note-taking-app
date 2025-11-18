@@ -1,4 +1,5 @@
 import { Note, Tag, User } from "@prisma/client";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 export interface UserStore {
   error: string | null | undefined;
@@ -13,6 +14,14 @@ export interface UserStore {
 export interface CurrentNote extends Note {
   tags: Tag[];
 }
+
+export type UpdateNoteData = {
+  title: string;
+  tags: string;
+  content: JsonValue;
+  id: string;
+  size: number;
+};
 
 export interface AppStore {
   prefersTheme: string | "system" | "light" | "dark";
@@ -33,12 +42,15 @@ export interface AppStore {
   setEditTitle: (editTitle: string) => void;
   editTags: string;
   setEditTags: (editTags: string) => void;
-  editContent: string;
-  setEditContent: (editContent: string) => void;
+  editContent: JsonValue;
+  setEditContent: (editContent: JsonValue) => void;
+  contentUpdated: boolean;
+  setContentUpdated: (value: boolean) => void;
 }
 
 export interface NewNotes {
   title?: string;
   content?: string;
   tags?: string;
+  size?: number;
 }

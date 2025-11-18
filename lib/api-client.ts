@@ -7,7 +7,7 @@
  */
 
 import { privateAxios } from "@/config/axios.config";
-import { CurrentNote, NewNotes } from "@/types/TYPES";
+import { CurrentNote, NewNotes, UpdateNoteData } from "@/types/TYPES";
 import { Note, Tag, User } from "@prisma/client";
 
 // Helper function for making authenticated requests
@@ -116,7 +116,9 @@ export const api = {
       await apiRequest<CurrentNote>(`/notes/${noteId}`, { method: "GET" }),
 
     create: async (data: NewNotes) =>
-      apiRequest<Note>("/notes", { method: "POST", body: data }),
+      apiRequest<CurrentNote>("/notes", { method: "POST", body: data }),
+    update: async (data: UpdateNoteData, id: string) =>
+      apiRequest<CurrentNote>(`/notes/${id}`, { method: "PUT", body: data }),
   },
   tag: {
     getAll: async () => await apiRequest<Tag[]>("/tags", { method: "GET" }),

@@ -10,7 +10,7 @@ export const Controls = () => {
   const [params, setParams] = useQueryStates(searchParamsSchema);
   const { currentNote } = useAppStore();
 
-  console.log({ currentNote });
+  // console.log({ currentNote });
   return (
     <div className="scroll-view w-[258px] h-full overflow-auto padding p-[20px] !pr-0 flex flex-col items-center gap-[12px] !pt-12">
       <Button

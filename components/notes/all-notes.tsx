@@ -8,6 +8,7 @@ import { useNotes } from "@/hooks";
 import { buildUrl, searchParamsSchema } from "../nuqs";
 import { SingleParserBuilder, useQueryStates } from "nuqs";
 import { parseDate } from "@/utils";
+import { CurrentNote } from "@/types/TYPES";
 
 export const AllNotes = () => {
   const { setCurrentNote, newNote, setNewNote } = useAppStore();
@@ -18,21 +19,32 @@ export const AllNotes = () => {
   const { notes, isPending, error, refetch, isRefetching } = useNotes({
     filter,
     query,
-    tag
+    tag,
   });
+
+  const handleCreateClick = () => {
+    setNewNote({
+      title: "",
+    });
+    setCurrentNote(null);
+    setParams({
+      id: null,
+    });
+  };
+
+  const handleNoteClick = ({ currentNote }: { currentNote: CurrentNote }) => {
+    setNewNote(null);
+    setCurrentNote(currentNote);
+  };
 
   return (
     <Suspense fallback={null}>
-      <div className="w-[290px] h-full border-left padding !pt-12 flex flex-col gap-[16px]">
+      <div className="w-[290px] h-full border-left padding !pt-12 flex flex-col items-center gap-[16px]">
         <div className="flex flex-col w-full border border-b-muted border-x-0 border-t-0 pb-2">
           <Button
-            className={`flex items-center justify-center w-[242] h-[41px] rounded-[12px] px-[16px] py-[12px] gap-[8px]`}
+            className={`flex items-center justify-center w-[242px] h-[41px] rounded-[12px] px-[16px] py-[12px] gap-[8px]`}
             size={"lg"}
-            onClick={() =>
-              setNewNote({
-                title: "",
-              })
-            }
+            onClick={handleCreateClick}
           >
             <h4 className="text-white flex items-center text-center gap-2">
               <span className="font-extralight text-xl">+</span> Create New Note
@@ -40,7 +52,7 @@ export const AllNotes = () => {
           </Button>
         </div>
         {newNote && (
-          <div className="text-[16px] p-[8px] rounded-[6px] bg-secondary text-secondary-foreground font-bold capitalize">
+          <div className="text-[16px] w-full flex items-center justify-center p-[8px] rounded-[6px] bg-secondary text-secondary-foreground font-bold capitalize">
             {newNote.title || "Untitled Note"}
           </div>
         )}
@@ -55,7 +67,7 @@ export const AllNotes = () => {
             {notes.map((item) => (
               <Link
                 key={item.id}
-                onClick={() => setCurrentNote(item)}
+                onClick={() => handleNoteClick({ currentNote: item })}
                 prefetch
                 href={buildUrl(
                   pathName,

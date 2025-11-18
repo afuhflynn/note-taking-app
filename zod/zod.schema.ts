@@ -242,4 +242,5 @@ export const creatNoteSchema = z.object({
     })
     .optional(),
   content: z.any().optional(),
+  size: z.number().optional(),
 });

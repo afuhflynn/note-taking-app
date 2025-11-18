@@ -55,18 +55,15 @@ body,
 }
 
 .simple-editor-wrapper {
-  width: 100%;
-  height: auto;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto;
-  background-color: transparent;
 }
 
 
 .simple-editor-content {
-  // max-width: 648px;
   width: 100%;
   margin: 0 auto;
   height: 100%;
@@ -74,14 +71,15 @@ body,
   flex-direction: column;
   flex: 1
 }
-.inner-editor-content{
-  max-width: 100%;
+.editor-wrapper{
+  max-height: calc(100% - 72px);
+  width: 100%;
+    height: 100%;
+  overflow: scroll;
 }
 
 .outer-editor-content{
   max-width: 848px;
-  height: 100vh;
-  width: 100vw;
 }
 
 .simple-editor-content .tiptap.ProseMirror.simple-editor {
@@ -89,8 +87,22 @@ body,
   padding: 3rem 3rem 30vh;
 }
 
+.editor-content .tiptap.ProseMirror.simple-editor{
+  flex: 1;
+    padding: 1rem 1rem 100%;
+}
+
+.editor-content{
+  max-height: calc(100% - 44px);
+  overflow: auto;
+}
+
 @media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
     padding: 1rem 1.5rem 30vh;
   }
+
+    .editor-content .tiptap.ProseMirror.simple-editor {
+      padding: 0rem 0.5rem 100%;
+    }
 }

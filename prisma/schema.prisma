@@ -37,7 +37,7 @@ model User {
   passwordResetToken              String?       @map("password_reset_token")
   passwordResetTokenExpiresAt     DateTime?     @map("password_reset_token_expires_at")
   createdAt                       DateTime      @default(now())
-  updatedAt                       DateTime      @default(now()) @updatedAt
+  updatedAt                       DateTime      @updatedAt
   sessions                        Session[]
   accounts                        Account[]
   userSettings                    UserSetting[]
@@ -88,7 +88,7 @@ model Verification {
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+  updatedAt  DateTime @updatedAt
 
   @@map("verification")
 }
@@ -117,11 +117,11 @@ model Note {
   title        String
   slug         String   @unique
   content      Json?
-  size         BigInt?  @default(0)
+  size         Int?     @default(0)
   archived     Boolean  @default(false)
   parentNoteId String?  @unique
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent      Note?         @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -135,7 +135,7 @@ model NoteHistory {
   noteId          String
   versionNumber   Int
   contentSnapshot String
-  updatedAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   note   Note    @relation(fields: [noteId], references: [id], onDelete: Cascade)
   User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)

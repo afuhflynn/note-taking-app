@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateSlug, parseEditorContent, parseTags } from "@/utils";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -43,12 +44,14 @@ export async function GET(
         id: true,
         createdAt: true,
         updatedAt: true,
+        size: true,
         tags: {
           select: {
             tagId: true,
             name: true,
           },
         },
+        content: true,
       },
     });
 
@@ -68,6 +71,116 @@ export async function GET(
     return NextResponse.json(
       {
         error: "An unexptected error occurred getting note.",
+        success: false,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Update a noe
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        error: "Authentication required",
+        success: false,
+      },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const { id } = await params;
+    const { title, content, tags, size } = await request.json();
+
+    if (!title && title.trim() === "") {
+      return NextResponse.json(
+        {
+          error: "Note title cannot be empty",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Process tags: split, trim, and filter empty strings
+    const tagsArray = parseTags(tags || "");
+
+    const slug = generateSlug(title);
+
+    const parsedContent = parseEditorContent(content);
+
+    // Create note with tags in a transaction
+    const updatedNote = await prisma.$transaction(async (tx) => {
+      // Find or create tags
+      const tagConnections = await Promise.all(
+        tagsArray.map(async (tagName) => {
+          // Use upsert to find existing tag or create new one
+          const tag = await tx.tag.upsert({
+            where: { name: tagName },
+            update: {}, // If tag exists, don't update anything
+            create: { name: tagName },
+          });
+          return { tagId: tag.tagId };
+        })
+      );
+
+      // get all tags to disconnect the usr from and then reconnect to the newly created or connected tags from above.
+      const allTags = await tx.tag.findMany();
+
+      if (!allTags) {
+        return undefined;
+      }
+      const tagDisconnections = allTags?.map((tag) => ({
+        tagId: tag.tagId,
+      }));
+
+      // Update note and connect to tags
+      return await tx.note.update({
+        where: {
+          id,
+        },
+        data: {
+          slug,
+          title: title,
+          content: parsedContent,
+          userId: session.user.id,
+          size: size || 0,
+          tags: {
+            disconnect: tagDisconnections, //First disconnect from all tags
+            connect: tagConnections, //  Connect to existing or newly created tags
+          },
+        },
+        select: {
+          title: true,
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          size: true,
+          tags: {
+            select: {
+              tagId: true,
+              name: true,
+            },
+          },
+          content: true,
+        },
+      });
+    });
+
+    return NextResponse.json(updatedNote, { status: 200 });
+  } catch (error: Error | any) {
+    console.error(`Error updating note: ${error}`);
+    return NextResponse.json(
+      {
+        error: "An unexpected error occurred updating note.",
         success: false,
       },
       { status: 500 }

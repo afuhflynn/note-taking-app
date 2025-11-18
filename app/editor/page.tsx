@@ -6,7 +6,7 @@ const SimpleEditorPage = () => {
     <SimpleEditor
       showThemeToggle={true}
       content={content}
-      className="outer-editor-content"
+      contentClass="outer-editor-content"
     />
   );
 };

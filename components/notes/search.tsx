@@ -7,8 +7,6 @@ export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [params, setParams] = useQueryStates(searchParamsSchema);
 
-  console.log(params);
-
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setParams(

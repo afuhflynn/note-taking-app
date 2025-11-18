@@ -11,6 +11,6 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-full h-full font-noto-serif-regular">{children}</div>
+    <div className="w-full h-full">{children}</div>
   );
 }

@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  EditorContent,
-  EditorContext,
-  useEditor,
-  useEditorState,
-} from "@tiptap/react";
+import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -194,13 +189,15 @@ const MobileToolbarContent = ({
 );
 
 export function SimpleEditor({
-  content,
   className,
+  contentClass,
   showThemeToggle = true,
+  content,
 }: {
-  content?: any;
   className?: string;
+  contentClass?: string;
   showThemeToggle?: boolean;
+  content: any;
 }) {
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
@@ -208,14 +205,22 @@ export function SimpleEditor({
     "main"
   );
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const {
+    setEditContent,
+    newNote,
+    setNewNote,
+    editContent,
+    setContentUpdated,
+    currentNote,
+  } = useAppStore();
 
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        autocomplete: "off",
+        autocomplete: "on",
         autocorrect: "off",
-        autocapitalize: "off",
+        autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor",
       },
@@ -247,21 +252,29 @@ export function SimpleEditor({
       }),
     ],
     content: content || "",
-  });
+    onUpdate(props) {
+      if (props && props.editor?.isFocused) {
+        console.log({
+          before: props.editor.$doc?.from,
+          after: props.editor?.$doc.textContent.trim(),
+        });
 
-  // useEditorState({
-  //   editor,
-  //   selector(context) {
-  //     console.log({
-  //       size: context.editor?.$doc.content.size,
-  //       content: context.editor?.$doc.content.content,
-  //       json: context.editor?.$doc.content.toJSON(),
-  //       string: context.editor?.$doc.content.toString(),
-  //       commands: context.editor?.commands,
-  //       join: context.editor?.$doc.content.content.join(),
-  //     });
-  //   },
-  // });
+        if (props.editor?.$doc.size !== currentNote?.size!) {
+          setContentUpdated(true);
+        }
+        if (newNote) {
+          setNewNote({
+            ...newNote,
+            size: props.editor?.$doc.content.size,
+            content: props.editor?.$doc.content.toJSON(),
+          });
+        }
+        if (editContent) {
+          setEditContent(props.editor?.$doc.content.toJSON());
+        }
+      }
+    },
+  });
 
   const rect = useCursorVisibility({
     editor,
@@ -275,7 +288,7 @@ export function SimpleEditor({
   }, [isMobile, mobileView]);
 
   return (
-    <div className={"simple-editor-wrapper"}>
+    <div className={cn("simple-editor-wrapper", className)}>
       <EditorContext.Provider value={{ editor }}>
         <Toolbar
           ref={toolbarRef}
@@ -305,7 +318,7 @@ export function SimpleEditor({
         <EditorContent
           editor={editor}
           role="presentation"
-          className={cn("simple-editor-content", className)}
+          className={cn("simple-editor-content", contentClass)}
         />
       </EditorContext.Provider>
     </div>

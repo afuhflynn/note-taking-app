@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateSlug } from "@/utils";
+import { generateSlug, parseEditorContent, parseTags } from "@/utils";
 import { creatNoteSchema } from "@/zod/zod.schema";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -82,6 +82,7 @@ export async function GET(request: NextRequest) {
         archived: true,
         createdAt: true,
         updatedAt: true,
+        size: true,
         tags: {
           select: {
             tagId: true,
@@ -133,12 +134,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { title, tags, content } = await request.json();
+    const { title, tags, content, size } = await request.json();
 
     const validatedData = creatNoteSchema.safeParse({
       title,
       tags,
       content,
+      size,
     });
 
     if (!validatedData.success) {
@@ -153,11 +155,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Process tags: split, trim, and filter empty strings
-    const tagsArray =
-      validatedData.data.tags
-        ?.split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag.length > 0) || [];
+    const tagsArray = parseTags(validatedData.data.tags!);
 
     const slug = generateSlug(validatedData.data.title.toLowerCase());
 
@@ -175,6 +173,8 @@ export async function POST(request: NextRequest) {
         { status: 409 }
       );
     }
+
+    const parsedContent = parseEditorContent(validatedData.data.content);
 
     // Create note with tags in a transaction
     const note = await prisma.$transaction(async (tx) => {
@@ -196,20 +196,26 @@ export async function POST(request: NextRequest) {
         data: {
           slug,
           title: validatedData.data.title,
-          content: validatedData.data.content,
+          content: parsedContent,
+          size: validatedData.data.size,
           userId: session.user.id,
           tags: {
             connect: tagConnections, // Connect to existing or newly created tags
           },
         },
-        include: {
+        select: {
+          title: true,
+          id: true,
+          createdAt: true,
+          updatedAt: true,
           tags: {
             select: {
               tagId: true,
               name: true,
-              createdAt: true,
             },
           },
+          content: true,
+          size: true,
         },
       });
     });

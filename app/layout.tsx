@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="font-noto-serif-regular">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -27,7 +27,7 @@ export default function RootLayout({
           <NuqsAdapter>
             <QueryProvider>{children}</QueryProvider>
           </NuqsAdapter>
-          <Toaster className="bg-background" theme="dark" richColors />
+          <Toaster className="bg-background" theme="system" richColors />
         </ThemeProvider>
       </body>
     </html>

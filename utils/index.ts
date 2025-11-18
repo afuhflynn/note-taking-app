@@ -24,3 +24,23 @@ export function constrcutParams(values: Record<string, string>) {
 
   return queryString.replaceAll(",", "");
 }
+
+export function parseEditorContent(content: any) {
+  // check if content is already strcutured correctly.
+  if (content && typeof content == "object" && content["type"] !== undefined) {
+    return content;
+  }
+  return {
+    type: "doc",
+    content: content || [],
+  };
+}
+
+export function parseTags(tags: string) {
+  return (
+    tags
+      ?.split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0) || []
+  );
+}

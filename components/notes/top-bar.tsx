@@ -13,7 +13,7 @@ export const TopBar = () => {
 
   return (
     <Suspense fallback={null}>
-      <header className="w-full flex items-center justify-between px-[32px] items-between h-[81px] py-2 border border-b-muted border-x-0 border-t-0">
+      <header className="w-full flex items-center justify-between px-[32px] items-between h-[70px] py-2 !pb-0 border border-b-muted border-x-0 border-t-0">
         {!tag ? (
           <h1 className="text-2xl text-neutral-950 dark:text-white">
             {filter && filter === "archived" ? "Archived Notes" : "All Notes"}
