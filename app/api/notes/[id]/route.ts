@@ -78,8 +78,7 @@ export async function GET(
   }
 }
 
-// Update a noe
-
+// Update a note
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -181,6 +180,98 @@ export async function PUT(
     return NextResponse.json(
       {
         error: "An unexpected error occurred updating note.",
+        success: false,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Archive a note
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        error: "Authentication required",
+        success: false,
+      },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const { id } = await params;
+
+    const note = await prisma.note.findUnique({
+      where: {
+        userId: session.user.id,
+        id,
+      },
+    });
+
+    if (!note) {
+      return NextResponse.json(
+        {
+          error: "No note found!",
+          success: false,
+        },
+        { status: 404 }
+      );
+    }
+
+    const updatedNote = await prisma.note.update({
+      where: { id },
+      data: {
+        archived: !note.archived,
+      },
+    });
+    return NextResponse.json(updatedNote, { status: 200 });
+  } catch (error: Error | any) {
+    console.error(`Error archiving note: ${error}`);
+    return NextResponse.json(
+      {
+        error: "An unexpected error occurred archiving note.",
+        success: false,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Delte a note
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        error: "Authentication required",
+        success: false,
+      },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const { id } = await params;
+
+    const deltedNote = await prisma.note.delete({
+      where: { id },
+    });
+    return NextResponse.json(deltedNote, { status: 200 });
+  } catch (error: Error | any) {
+    console.error(`Error deleting note: ${error}`);
+    return NextResponse.json(
+      {
+        error: "An unexpected error occurred deleting note.",
         success: false,
       },
       { status: 500 }

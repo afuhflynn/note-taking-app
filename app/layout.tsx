@@ -27,7 +27,12 @@ export default function RootLayout({
           <NuqsAdapter>
             <QueryProvider>{children}</QueryProvider>
           </NuqsAdapter>
-          <Toaster className="bg-background" theme="system" richColors />
+          <Toaster
+            className="bg-background"
+            theme="system"
+            richColors
+            closeButton
+          />
         </ThemeProvider>
       </body>
     </html>

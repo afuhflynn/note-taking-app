@@ -119,6 +119,10 @@ export const api = {
       apiRequest<CurrentNote>("/notes", { method: "POST", body: data }),
     update: async (data: UpdateNoteData, id: string) =>
       apiRequest<CurrentNote>(`/notes/${id}`, { method: "PUT", body: data }),
+    archive: async (id: string) =>
+      apiRequest<CurrentNote>(`/notes/${id}`, { method: "PATCH" }),
+    delete: async (id: string) =>
+      apiRequest<CurrentNote>(`/notes/${id}`, { method: "DELETE" }),
   },
   tag: {
     getAll: async () => await apiRequest<Tag[]>("/tags", { method: "GET" }),

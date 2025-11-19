@@ -276,6 +276,10 @@ export function SimpleEditor({
     },
   });
 
+  // editor?.once("mount", ()=>{
+  //   editor;
+  // })
+
   const rect = useCursorVisibility({
     editor,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAppStore } from "@/store/app.store";
 import { Suspense } from "react";
 import { useNotes } from "@/hooks";
@@ -14,6 +14,7 @@ export const AllNotes = () => {
   const { setCurrentNote, newNote, setNewNote } = useAppStore();
   const pathName = usePathname();
   const [params, setParams] = useQueryStates(searchParamsSchema);
+  const router = useRouter();
 
   const { filter, id: currentNoteId, query, tag } = params;
   const { notes, isPending, error, refetch, isRefetching } = useNotes({
@@ -30,11 +31,13 @@ export const AllNotes = () => {
     setParams({
       id: null,
     });
+    router.prefetch("/notes");
   };
 
   const handleNoteClick = ({ currentNote }: { currentNote: CurrentNote }) => {
     setNewNote(null);
     setCurrentNote(currentNote);
+    router.prefetch("/notes");
   };
 
   return (
@@ -56,12 +59,21 @@ export const AllNotes = () => {
             {newNote.title || "Untitled Note"}
           </div>
         )}
-        {filter === "archived" && (
+        {query && query.trim() !== "" ? (
+          <div className="w-full h-auto mb-2">
+            All notes matching {`”${query}”`} are displayed below.
+          </div>
+        ) : tag && tag.trim() !== "" ? (
+          <div className="w-full h-auto mb-2">
+            All notes with the {`”${tag.replaceAll("-", " ")}”`} tag are shown
+            here.
+          </div>
+        ) : filter === "archived" ? (
           <div className="w-full h-auto mb-2">
             All your archived notes are stored here. You can restore or delete
             them anytime.
           </div>
-        )}
+        ) : null}
         {notes && notes.length > 0 ? (
           <div className="flex-1 flex flex-col gap-[4px] overflow-auto scroll-view">
             {notes.map((item) => (
@@ -103,7 +115,22 @@ export const AllNotes = () => {
           </div>
         ) : (
           <div className="w-full h-auto p-[8px] rounded-[8px] bg-[#F3F5F8] dark:bg-[#232530] text-[14px]">
-            {filter === "archived" ? (
+            {query && query.trim() !== "" ? (
+              <span>
+                No notes match your search. Try a different keyword or{" "}
+                <Link href="/notes" className="underline">
+                  create a new note.
+                </Link>
+              </span>
+            ) : tag && tag.trim() !== "" ? (
+              <span>
+                No notes found for the tag {`"${tag?.replaceAll("-", " ")}"`}.
+                Try a different tag or{" "}
+                <Link href="/notes" className="underline">
+                  create a new note.
+                </Link>
+              </span>
+            ) : filter === "archived" ? (
               <span>
                 No notes have been archived yet. Move notes here for
                 safekeeping, or{" "}

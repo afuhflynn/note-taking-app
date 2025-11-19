@@ -9,19 +9,24 @@ import { searchParamsSchema } from "../nuqs";
 export const TopBar = () => {
   const [params] = useQueryStates(searchParamsSchema);
 
-  const { tag, filter } = params;
+  const { tag, filter, query } = params;
 
   return (
     <Suspense fallback={null}>
       <header className="w-full flex items-center justify-between px-[32px] items-between h-[70px] py-2 !pb-0 border border-b-muted border-x-0 border-t-0">
-        {!tag ? (
+        {query && query.trim() !== "" ? (
           <h1 className="text-2xl text-neutral-950 dark:text-white">
-            {filter && filter === "archived" ? "Archived Notes" : "All Notes"}
+            <span className="text-neutral-300">Showing results for:</span>{" "}
+            <span className="capitalize">{query}</span>
+          </h1>
+        ) : tag && tag.trim() !== "" ? (
+          <h1 className="text-2xl text-neutral-950 dark:text-white">
+            <span className="text-neutral-300">Notes Tagged:</span>{" "}
+            <span className="capitalize">{tag.replaceAll("-", " ")}</span>
           </h1>
         ) : (
           <h1 className="text-2xl text-neutral-950 dark:text-white">
-            <span className="text-neutral-600">Notes Tagged:</span>{" "}
-            <span className="capitalize">{tag.replaceAll("-", " ")}</span>
+            {filter && filter === "archived" ? "Archived Notes" : "All Notes"}
           </h1>
         )}
         <div className="flex items-center gap-[16px]">

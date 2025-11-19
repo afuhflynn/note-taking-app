@@ -211,59 +211,122 @@ export function useUpdateNote() {
 }
 
 // ==================== DELETE NOTE ====================
-// export function useDeleteNote() {
-//   const queryClient = useQueryClient();
-//   const router = useRouter();
+export function useDeleteNote() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { setCurrentNote } = useAppStore();
 
-//   const { mutate, error, isPending } = useMutation({
-//     mutationFn: async (noteId: string) => await api.note.delete({ noteId }),
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: async (noteId: string) => await api.note.delete(noteId),
 
-//     onMutate: async (noteId) => {
-//       // Cancel queries
-//       await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+    onMutate: async (noteId) => {
+      // Cancel queries
+      await queryClient.cancelQueries({ queryKey: ["user-notes"] });
 
-//       // Snapshot
-//       const previousNotes = queryClient.getQueryData(["user-notes"]);
+      // Snapshot
+      const previousNotes = queryClient.getQueryData(["user-notes"]);
 
-//       // Optimistically remove from list
-//       queryClient.setQueryData(["user-notes"], (old: any) => {
-//         if (!old) return old;
-//         return old.filter((note: any) => note.id !== noteId);
-//       });
+      // Optimistically remove from list
+      queryClient.setQueryData(["user-notes"], (old: any) => {
+        if (!old) return old;
+        return old.filter((note: any) => note.id !== noteId);
+      });
 
-//       return { previousNotes };
-//     },
+      return { previousNotes };
+    },
 
-//     onError: (err, noteId, context) => {
-//       // Rollback
-//       if (context?.previousNotes) {
-//         queryClient.setQueryData(["user-notes"], context.previousNotes);
-//       }
-//       toast.error("Failed to delete note");
-//     },
+    onError: (err, noteId, context) => {
+      // Rollback
+      if (context?.previousNotes) {
+        queryClient.setQueryData(["user-notes"], context.previousNotes);
+      }
+      toast.error("Failed to delete note");
+    },
 
-//     onSuccess: (data, noteId) => {
-//       toast.success("Note deleted successfully");
+    onSuccess: (data, noteId) => {
+      toast.success("Note deleted successfully");
 
-//       // Remove from cache
-//       queryClient.removeQueries({ queryKey: ["note", noteId] });
+      // Remove from cache
+      queryClient.removeQueries({ queryKey: ["note", noteId] });
 
-//       // Navigate away
-//       router.push("/notes");
-//     },
+      // empty current Note
+      setCurrentNote(null);
 
-//     onSettled: () => {
-//       queryClient.invalidateQueries({ queryKey: ["user-notes"] });
-//       queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
-//     },
-//   });
+      // Navigate away
+      router.push("/notes");
+    },
 
-//   return {
-//     deleteNote: mutate,
-//     isPending,
-//     error,
-//   };
-// }
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
+    },
+  });
+
+  return {
+    deleteNote: mutate,
+    isPending,
+    error,
+  };
+}
+
+// ==================== ARCHIVE NOTE ====================
+export function useArchiveNote() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { setCurrentNote } = useAppStore();
+
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: async (noteId: string) => await api.note.archive(noteId),
+
+    onMutate: async (noteId) => {
+      // Cancel queries
+      await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+
+      // Snapshot
+      const previousNotes = queryClient.getQueryData(["user-notes"]);
+
+      // Optimistically remove from list
+      queryClient.setQueryData(["user-notes"], (old: any) => {
+        if (!old) return old;
+        return old.filter((note: any) => note.id !== noteId);
+      });
+
+      return { previousNotes };
+    },
+
+    onError: (err, noteId, context) => {
+      // Rollback
+      if (context?.previousNotes) {
+        queryClient.setQueryData(["user-notes"], context.previousNotes);
+      }
+      toast.error("Failed to archive note");
+    },
+
+    onSuccess: (data, noteId) => {
+      toast.success("Note archived successfully");
+
+      // Remove from cache
+      queryClient.removeQueries({ queryKey: ["note", noteId] });
+
+      // empty current Note
+      setCurrentNote(null);
+
+      // Navigate away
+      router.push("/notes");
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+      queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
+    },
+  });
+
+  return {
+    arhiveNote: mutate,
+    isPending,
+    error,
+  };
+}
 
 // ==================== GET ALL TAGS ====================
 export function useTags() {

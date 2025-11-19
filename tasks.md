@@ -8,6 +8,7 @@
 
 ### Top priority
 
+[] Ensure that editor content changes or updates as current is changed accurately
 [] Create, read, update, and delete notes
 [] Archive notes
 [] Search notes by title, tag, and content
@@ -23,6 +24,8 @@
 [] NOte versining
 [] full-text search with PostgreSQL or Elasticsearch, conflict resolution for concurrent edits (for input text query)
 [] search indexing for title and content
+[] Add shortcuts (keyboard) for most activities (e.g save, update and more)
+[] Add auto completion in the text editor powered by ai.
 
 ### Not really necessary
 
