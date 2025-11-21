@@ -9,8 +9,8 @@ export async function ensureBucket(bucketName: string) {
       })
     );
     return true;
-  } catch (error: Error | any) {
-    if (error.$metadata?.httpStatusCode === 404) {
+  } catch (error) {
+    if ((error as any).$metadata?.httpStatusCode === 404) {
       // Bucket missing create it
       await s3.send(
         new CreateBucketCommand({

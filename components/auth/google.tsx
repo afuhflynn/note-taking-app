@@ -2,6 +2,8 @@
 
 import { Button } from "../ui/button";
 
+// TODO: Work on this file to make sure google auth works
+
 // Use a client-safe function from a client library (for example, next-auth/react)
 import { FormEvent, useEffect } from "react";
 import { useUserStore } from "@/store/user.store";
@@ -49,7 +51,7 @@ export function GoogleButton() {
           alt="Google icon"
           width={24}
           height={24}
-          className="hidden"
+          className="hidden dark:block"
         />
         <Image
           src={"/icons/Google_Light.svg"}

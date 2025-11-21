@@ -59,9 +59,9 @@ export const SignUpForm = () => {
       // await signUpUser({ email: values.email }); // TODO: REMOVE THIS LATER FOR INTERNET USAGE
       toast.success("Account created successfully.");
       // router.push("/verify-email"); // TODO: Ensure correct redirect
-    } catch (error: Error | any) {
+    } catch (error) {
       console.error(error);
-      setError(error.message);
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }

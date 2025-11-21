@@ -8,23 +8,23 @@
 
 ### Top priority
 
-[] Ensure that editor content changes or updates as current is changed accurately
-[] Create, read, update, and delete notes
-[] Archive notes
-[] Search notes by title, tag, and content
-[] Select color and font themes
-[] Make sure to check and ensure that zod is used everywhere for form validation.
+[x] Ensure that editor content changes or updates as current is changed accurately
+[x] Create, read, update, and delete notes
+[x] Archive notes
+[x] Search notes by title, tag, and content
+[x] Select color and font themes
+[x] Make sure to check and ensure that zod is used everywhere for form validation.
 
 ### Low priority
 
-[] Add realtime features.
+[x] Add realtime features.
 [] Check on how to parse the db note content at the moment of comparison and more for efficient filtering of the query passed on the input search box.
-[] Add Keyboard navigation for all features5
-[] Auto-save with debouncing and add keyboard shortcuts
+[x] Add Keyboard navigation for all features
+[x] Auto-save with debouncing and add keyboard shortcuts
 [] NOte versining
-[] full-text search with PostgreSQL or Elasticsearch, conflict resolution for concurrent edits (for input text query)
-[] search indexing for title and content
-[] Add shortcuts (keyboard) for most activities (e.g save, update and more)
+[] full-text search with PostgreSQL or Elasticsearch, conflict resolution for concurrent
+
+[x] Add shortcuts (keyboard) for most activities (e.g save, update and more)
 [] Add auto completion in the text editor powered by ai.
 
 ### Not really necessary

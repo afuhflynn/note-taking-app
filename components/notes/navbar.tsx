@@ -191,7 +191,7 @@ export const NavBar = () => {
             </div>
           )}
         </div>
-        {/* <FontToggle /> */}
+        <FontToggle />
       </nav>
     </Suspense>
   );

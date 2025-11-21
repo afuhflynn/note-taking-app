@@ -16,7 +16,7 @@ export function FontToggle() {
   const setFont = (fontName: string) => {
     // setCurrentFont(fontName);
     document.documentElement.style.setProperty(
-      "font-familys",
+      "--font-family-base",
       fontName === "Inter"
         ? "Inter_18pt-Medium"
         : fontName === "Source Code Pro"

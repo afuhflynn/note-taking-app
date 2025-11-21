@@ -33,6 +33,7 @@ export const NoteCanvas = () => {
       <div className="w-full flex-1 max-h-[calc(100% - 142.15px)] overflow-auto flex flex-col relative">
         {/* Text editor */}
         <SimpleEditor
+          key={newNote ? "new-note" : currentNoteId}
           content={newNote?.content || note?.content}
           showThemeToggle={false}
           className="editor-wrapper"

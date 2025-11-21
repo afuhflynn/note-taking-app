@@ -44,9 +44,9 @@ export const SignInForm = () => {
 
       toast.success("Sign In successful");
       router.push("/notes");
-    } catch (error: Error | any) {
+    } catch (error) {
       console.error(error);
-      toast.error(error.messsage);
+      toast.error((error as Error).message);
     } finally {
       setLoading(false);
     }

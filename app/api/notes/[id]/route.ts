@@ -1,8 +1,12 @@
+import { headers } from "next/headers";
+import { publish } from "@/lib/pubsub";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateSlug, parseEditorContent, parseTags } from "@/utils";
-import { headers } from "next/headers";
+import { creatNoteSchema } from "@/zod/zod.schema";
 import { NextRequest, NextResponse } from "next/server";
+import { extractTextFromTiptapContent } from "@/lib/content-parser";
+import { createNoteVersion } from "@/lib/note-versioning";
 
 // get a single note based on it's id
 export async function GET(
@@ -66,7 +70,7 @@ export async function GET(
     }
 
     return NextResponse.json(note);
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error(error);
     return NextResponse.json(
       {
@@ -97,17 +101,21 @@ export async function PUT(
 
   try {
     const { id } = await params;
-    const { title, content, tags, size } = await request.json();
+    const body = await request.json();
+    const validatedData = creatNoteSchema.safeParse(body);
 
-    if (!title && title.trim() === "") {
+    if (!validatedData.success) {
+      const error = JSON.parse(validatedData.error.message);
       return NextResponse.json(
         {
-          error: "Note title cannot be empty",
+          error: error[0]?.message || "Validation failed",
           success: false,
         },
         { status: 400 }
       );
     }
+
+    const { title, content, tags, size } = validatedData.data;
 
     // Process tags: split, trim, and filter empty strings
     const tagsArray = parseTags(tags || "");
@@ -142,6 +150,8 @@ export async function PUT(
       }));
 
       // Update note and connect to tags
+      const searchableText = extractTextFromTiptapContent(parsedContent);
+
       return await tx.note.update({
         where: {
           id,
@@ -150,6 +160,7 @@ export async function PUT(
           slug,
           title: title,
           content: parsedContent,
+          searchableText,
           userId: session.user.id,
           size: size || 0,
           tags: {
@@ -174,8 +185,19 @@ export async function PUT(
       });
     });
 
+    // Create version snapshot
+    await createNoteVersion({
+      noteId: id,
+      userId: session.user.id,
+      content: parsedContent,
+      title,
+    });
+
+    // Publish realtime event
+    publish("noteUpdated", updatedNote);
+
     return NextResponse.json(updatedNote, { status: 200 });
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error(`Error updating note: ${error}`);
     return NextResponse.json(
       {
@@ -230,8 +252,12 @@ export async function PATCH(
         archived: !note.archived,
       },
     });
+
+    // Publish realtime event
+    publish("noteArchived", updatedNote);
+
     return NextResponse.json(updatedNote, { status: 200 });
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error(`Error archiving note: ${error}`);
     return NextResponse.json(
       {
@@ -266,8 +292,12 @@ export async function DELETE(
     const deltedNote = await prisma.note.delete({
       where: { id },
     });
+
+    // Publish realtime event
+    publish("noteDeleted", { id });
+
     return NextResponse.json(deltedNote, { status: 200 });
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error(`Error deleting note: ${error}`);
     return NextResponse.json(
       {

@@ -112,22 +112,26 @@ model Tag {
 }
 
 model Note {
-  id           String   @id @default(cuid())
-  userId       String
-  title        String
-  slug         String   @unique
-  content      Json?
-  size         Int?     @default(0)
-  archived     Boolean  @default(false)
-  parentNoteId String?  @unique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String
+  title          String
+  slug           String   @unique
+  content        Json?
+  searchableText String?  @db.Text // Plain text extracted from content for efficient searching
+  size           Int?     @default(0)
+  archived       Boolean  @default(false)
+  parentNoteId   String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   parent      Note?         @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children    Note[]        @relation("NoteToChildren")
   noteHistory NoteHistory[]
   tags        Tag[]
+
+  @@index([searchableText]) // Index for faster text search
+  @@index([userId, archived]) // Composite index for common queries
 }
 
 model NoteHistory {

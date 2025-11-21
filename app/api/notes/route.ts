@@ -1,9 +1,12 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { generateSlug, parseEditorContent, parseTags } from "@/utils";
 import { creatNoteSchema } from "@/zod/zod.schema";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { publish } from "@/lib/pubsub";
+import { extractTextFromTiptapContent } from "@/lib/content-parser";
 
 // Get all notes
 export async function GET(request: NextRequest) {
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Construct the where filer and clause based on filters if available
-  let where = {} as any;
+  let where: Prisma.NoteWhereInput = {};
   where = {
     userId: session.user.id,
     archived: filter === "archived" ? true : false,
@@ -48,7 +51,7 @@ export async function GET(request: NextRequest) {
         },
       },
       {
-        content: {
+        searchableText: {
           contains: query as string,
           mode: "insensitive",
         },
@@ -107,7 +110,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(notes);
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error(error);
     return NextResponse.json(
       {
@@ -192,11 +195,14 @@ export async function POST(request: NextRequest) {
       );
 
       // Create note and connect to tags
-      return await tx.note.create({
+      const searchableText = extractTextFromTiptapContent(parsedContent);
+
+      const note = await tx.note.create({
         data: {
           slug,
           title: validatedData.data.title,
           content: parsedContent,
+          searchableText,
           size: validatedData.data.size,
           userId: session.user.id,
           tags: {
@@ -218,14 +224,17 @@ export async function POST(request: NextRequest) {
           size: true,
         },
       });
+      // Publish realtime event for note creation
+      publish("noteCreated", note);
+      return note;
     });
 
     return NextResponse.json(note, { status: 201 });
-  } catch (error: Error | any) {
+  } catch (error) {
     console.error("Error creating note:", error);
 
     // Handle specific Prisma errors
-    if (error.code === "P2002") {
+    if ((error as any).code === "P2002") {
       return NextResponse.json(
         {
           error: "A note with this title already exists.",

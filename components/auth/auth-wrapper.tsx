@@ -1,6 +1,7 @@
 import { NotesLogo } from "@/components/ui/logo";
 import { Footer } from "./footer";
 import { GitHubButton } from "./github";
+import { GoogleButton } from "./google";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -43,7 +44,8 @@ export function AuthWrapper({
             </div>
           </div>
 
-          <div className="mt-4">
+          <div className="my-8 w-full flex flex-col gap-4">
+            <GoogleButton />
             <GitHubButton />
           </div>
         </div>

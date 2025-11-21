@@ -72,6 +72,8 @@ import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAppStore } from "@/store/app.store";
+import { useAutoSave } from "@/hooks/use-auto-save";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -214,8 +216,17 @@ export function SimpleEditor({
     currentNote,
   } = useAppStore();
 
+  // Auto-save hook
+  const { isSaving, forceSave } = useAutoSave(2000); // 2 second debounce
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onSave: forceSave,
+  });
+
   const editor = useEditor({
     immediatelyRender: false,
+    shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
         autocomplete: "on",
