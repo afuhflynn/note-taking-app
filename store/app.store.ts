@@ -61,4 +61,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setContentUpdated(value) {
     set({ contentUpdated: value });
   },
+
+  searchQuery: "" as string,
+  setSearchQuery(query: string) {
+    set({ searchQuery: query });
+  },
 }));

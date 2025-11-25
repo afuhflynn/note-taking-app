@@ -25,24 +25,27 @@ enum PrefersFont {
 }
 
 model User {
-  id                              String        @id
+  id                              String             @id
   name                            String
   email                           String
-  emailVerified                   Boolean       @default(false)
+  emailVerified                   Boolean            @default(false)
   image                           String?
-  emailVerificationCode           String?       @map("email_verification_code")
-  emailVerificationToken          String?       @map("email_verification_token")
-  emailVerificationCodeExpiresAt  DateTime?     @map("email_verification_code_expires_at")
-  emailVerificationTokenExpiresAt DateTime?     @map("email_verification_token_expires_at")
-  passwordResetToken              String?       @map("password_reset_token")
-  passwordResetTokenExpiresAt     DateTime?     @map("password_reset_token_expires_at")
-  createdAt                       DateTime      @default(now())
-  updatedAt                       DateTime      @updatedAt
+  emailVerificationCode           String?            @map("email_verification_code")
+  emailVerificationToken          String?            @map("email_verification_token")
+  emailVerificationCodeExpiresAt  DateTime?          @map("email_verification_code_expires_at")
+  emailVerificationTokenExpiresAt DateTime?          @map("email_verification_token_expires_at")
+  passwordResetToken              String?            @map("password_reset_token")
+  passwordResetTokenExpiresAt     DateTime?          @map("password_reset_token_expires_at")
+  createdAt                       DateTime           @default(now())
+  updatedAt                       DateTime           @updatedAt
   sessions                        Session[]
   accounts                        Account[]
   userSettings                    UserSetting[]
   notes                           Note[]
   noteHistories                   NoteHistory[]
+  sharedNotes                     SharedNote[]
+  noteCollaborators               NoteCollaborator[]
+  drawingAssets                   DrawingAsset[]
 
   @@unique([email])
   @@map("user")
@@ -60,6 +63,8 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
+  @@index([userId]) // Index for session lookup by user
+  @@index([token]) // Index for token-based session lookups
   @@map("session")
 }
 
@@ -109,6 +114,8 @@ model Tag {
 
   // Relations
   notes Note[]
+
+  @@index([name]) // Index for tag lookups
 }
 
 model Note {
@@ -124,14 +131,19 @@ model Note {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent      Note?         @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children    Note[]        @relation("NoteToChildren")
-  noteHistory NoteHistory[]
-  tags        Tag[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent        Note?          @relation("NoteToChildren", fields: [parentNoteId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children      Note[]         @relation("NoteToChildren")
+  noteHistory   NoteHistory[]
+  tags          Tag[]
+  sharedNotes   SharedNote[]
+  drawingAssets DrawingAsset[]
 
   @@index([searchableText]) // Index for faster text search
-  @@index([userId, archived]) // Composite index for common queries
+  @@index([userId, archived]) // Composite index for common queries (list active notes)
+  @@index([userId, createdAt]) // Composite index for sorting by creation date
+  @@index([userId, updatedAt]) // Composite index for recent notes
+  @@index([archived]) // Filter archived notes globally
 }
 
 model NoteHistory {
@@ -144,4 +156,64 @@ model NoteHistory {
   note   Note    @relation(fields: [noteId], references: [id], onDelete: Cascade)
   User   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String?
+
+  @@index([noteId, versionNumber]) // Composite index for version lookups
+  @@index([noteId, updatedAt]) // Composite index for recent versions
+}
+
+enum SharePermission {
+  VIEW
+  EDIT
+}
+
+model SharedNote {
+  id         String          @id @default(cuid())
+  noteId     String
+  shareToken String          @unique // Public share link token
+  permission SharePermission @default(VIEW)
+  expiresAt  DateTime?
+  createdAt  DateTime        @default(now())
+  createdBy  String
+
+  note          Note               @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  creator       User               @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  collaborators NoteCollaborator[]
+
+  @@index([shareToken])
+  @@index([noteId])
+}
+
+model NoteCollaborator {
+  id           String          @id @default(cuid())
+  sharedNoteId String
+  userId       String? // Null for anonymous users
+  userName     String? // For anonymous users
+  permission   SharePermission @default(VIEW)
+  lastActiveAt DateTime        @default(now())
+  createdAt    DateTime        @default(now())
+
+  sharedNote SharedNote @relation(fields: [sharedNoteId], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sharedNoteId])
+  @@index([userId])
+}
+
+model DrawingAsset {
+  id        String   @id @default(cuid())
+  userId    String
+  noteId    String? // Optional: associated note
+  name      String
+  data      String   @db.Text // Base64 encoded drawing data
+  thumbnail String?  @db.Text // Base64 encoded thumbnail
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([noteId])
 }

@@ -15,13 +15,15 @@ export async function POST(req: Request) {
   const { prompt, context } = await req.json();
 
   const result = streamText({
-    model: google("gemini-1.5-flash"),
+    model: google("gemini-2.5-flash"),
     system: `You are a helpful AI writing assistant embedded in a note-taking app.
     Your goal is to help the user complete their sentences or paragraphs based on the context provided.
     Keep your suggestions concise, relevant, and in the same tone as the user's writing.
-    Do not repeat the user's input. Just provide the continuation.`,
+    Do not repeat the user's input. Just provide the continuation.
+    Be creative but stay on topic.`,
     prompt: `Context: ${context}\n\nUser wrote: ${prompt}\n\nContinue writing:`,
+    temperature: 0.7,
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }

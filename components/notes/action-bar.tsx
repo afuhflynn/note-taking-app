@@ -1,5 +1,8 @@
 import { useCreateNote, useUpdateNote } from "@/hooks";
 import { Button } from "../ui/button";
+import { ShareNoteDialog } from "@/components/dialogs/share-note-dialog";
+import { VersionHistoryDialog } from "@/components/dialogs/version-history-dialog";
+import { KeyboardShortcutsDialog } from "@/components/dialogs/keyboard-shortcuts-dialog";
 import { useAppStore } from "@/store/app.store";
 import { NewNotes, UpdateNoteData } from "@/types/TYPES";
 import { CustomLoader1 } from "../loader";
@@ -39,7 +42,7 @@ export const ActionBar = () => {
 
   const isLoading = isPending || isUpdatingNote;
   return (
-    <div className=" bg-background h-[70px] pt-2 flex absolute bottom-[3.2rem] gap-4 w-full items-center justify-start border-[2px] border-b-muted border-x-0 border-b-0 ">
+    <div className=" bg-background h-[70px] py-2 flex absolute bottom-[3.9rem] gap-4 w-full items-center justify-start border-[2px] border-b-muted border-x-0 border-b-0 ">
       <Button
         className="px-[16px] w-[99px] h-[41px] py-[12px] gap-[8px] rounded-[8px] text-[14px]"
         disabled={isLoading || (currentNote && !contentUpdated)!}
@@ -57,6 +60,9 @@ export const ActionBar = () => {
           Cancel
         </Button>
       )}
+      {currentNote && <ShareNoteDialog noteId={currentNote.id} />}
+      {currentNote && <VersionHistoryDialog noteId={currentNote.id} />}
+      <KeyboardShortcutsDialog />
     </div>
   );
 };

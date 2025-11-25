@@ -2,10 +2,12 @@ import { Search } from "lucide-react";
 import { useQueryStates } from "nuqs";
 import { useState, useEffect } from "react";
 import { searchParamsSchema } from "../nuqs";
+import { useAppStore } from "@/store/app.store";
 
 export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [params, setParams] = useQueryStates(searchParamsSchema);
+  const { setSearchQuery: setStoreSearchQuery } = useAppStore();
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -18,10 +20,12 @@ export const SearchBar = () => {
           shallow: false,
         }
       );
+      // Update store for highlighting
+      setStoreSearchQuery(searchQuery);
     }, 600);
 
     return () => clearTimeout(timeOutId);
-  }, [searchQuery, setParams]);
+  }, [searchQuery, setParams, setStoreSearchQuery]);
 
   return (
     <div className="w-[300px] h-[44px] p-[16px] px-[14px] gap-[8px] flex items-center rounded-[8px] border">

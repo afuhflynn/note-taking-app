@@ -3,7 +3,7 @@ import { publish } from "@/lib/pubsub";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateSlug, parseEditorContent, parseTags } from "@/utils";
-import { creatNoteSchema } from "@/zod/zod.schema";
+import { creatNoteSchema, updateNoteSchema } from "@/zod/zod.schema";
 import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromTiptapContent } from "@/lib/content-parser";
 import { createNoteVersion } from "@/lib/note-versioning";
@@ -102,9 +102,15 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const validatedData = creatNoteSchema.safeParse(body);
+    const validatedData = updateNoteSchema.safeParse(body);
 
     if (!validatedData.success) {
+      console.error(
+        "Something went wrong: ",
+        validatedData.error.message,
+        "tags: ",
+        body["tags"]
+      );
       const error = JSON.parse(validatedData.error.message);
       return NextResponse.json(
         {
@@ -120,7 +126,7 @@ export async function PUT(
     // Process tags: split, trim, and filter empty strings
     const tagsArray = parseTags(tags || "");
 
-    const slug = generateSlug(title);
+    const slug = generateSlug(title!);
 
     const parsedContent = parseEditorContent(content);
 
@@ -190,7 +196,7 @@ export async function PUT(
       noteId: id,
       userId: session.user.id,
       content: parsedContent,
-      title,
+      title: title!,
     });
 
     // Publish realtime event

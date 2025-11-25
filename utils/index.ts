@@ -44,3 +44,5 @@ export function parseTags(tags: string) {
       .filter((tag) => tag.length > 0) || []
   );
 }
+
+export { highlightMatches, getHighlightSnippet } from "./highlight-utils";

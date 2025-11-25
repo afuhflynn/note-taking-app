@@ -1,4 +1,4 @@
-import { useNote } from "@/hooks";
+import { useNetworkStatus, useOnlineStatus } from "@/hooks/use-online-status";
 import { useAppStore } from "@/store/app.store";
 import { parseDate } from "@/utils";
 import { Clock, Tag } from "lucide-react";
@@ -23,7 +23,15 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
   // Refs for auto-focus
   const titleInputRef = useRef<HTMLInputElement>(null);
   const tagsInputRef = useRef<HTMLInputElement>(null);
+  const { isOnline, isChecking } = useNetworkStatus();
 
+  useEffect(() => {
+    if (isChecking) {
+      console.log("Checking network status...");
+    } else {
+      console.log(`You are: ${isOnline ? "ONLINE" : "OFFLINE"}`, isOnline);
+    }
+  }, [isOnline]);
   // Auto-focus when editing starts
   useEffect(() => {
     if (isEditingTitle && titleInputRef.current) {

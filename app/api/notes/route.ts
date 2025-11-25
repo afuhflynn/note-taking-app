@@ -60,7 +60,6 @@ export async function GET(request: NextRequest) {
   }
 
   if (tag && tag.trim() !== "" && tag !== null) {
-    console.log({ tag });
     where.AND = [
       {
         tags: {

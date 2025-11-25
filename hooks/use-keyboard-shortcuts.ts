@@ -7,6 +7,7 @@ interface KeyboardShortcutsOptions {
   onSave?: () => void;
   onNewNote?: () => void;
   onSearch?: () => void;
+  onVersionHistory?: () => void;
 }
 
 export function useKeyboardShortcuts(options: KeyboardShortcutsOptions = {}) {
@@ -57,6 +58,14 @@ export function useKeyboardShortcuts(options: KeyboardShortcutsOptions = {}) {
           if (searchInput) {
             searchInput.focus();
           }
+        }
+      }
+
+      // Ctrl/Cmd + Shift + H: Show version history
+      if (modKey && e.shiftKey && e.key === "H") {
+        e.preventDefault();
+        if (options.onVersionHistory) {
+          options.onVersionHistory();
         }
       }
 

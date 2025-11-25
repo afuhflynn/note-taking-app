@@ -244,3 +244,26 @@ export const creatNoteSchema = z.object({
   content: z.any().optional(),
   size: z.number().optional(),
 });
+
+export const updateNoteSchema = z.object({
+  title: z
+    .string()
+    .min(4, {
+      message: "A valid note title must be at least 4 characters.",
+    })
+    .max(200, {
+      message: "A valid note title must be a maximum of 200 characters",
+    })
+    .optional(),
+  tags: z
+    .string()
+    .max(400, {
+      message: "A valid note tags must not be more than 400 characters",
+    })
+    .min(1, {
+      message: "A valid note tags must be at least 1 character.",
+    })
+    .optional(),
+  content: z.any().optional(),
+  size: z.number().optional(),
+});

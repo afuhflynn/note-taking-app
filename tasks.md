@@ -17,15 +17,15 @@
 
 ### Low priority
 
-[x] Add realtime features.
-[] Check on how to parse the db note content at the moment of comparison and more for efficient filtering of the query passed on the input search box.
-[x] Add Keyboard navigation for all features
-[x] Auto-save with debouncing and add keyboard shortcuts
-[] NOte versining
-[] full-text search with PostgreSQL or Elasticsearch, conflict resolution for concurrent
+[ ] Add realtime features.
+[ ] Check on how to parse the db note content at the moment of comparison and more for efficient filtering of the query passed on the input search box.
+[ ] Add Keyboard navigation for all features
+[ ] Auto-save with debouncing and add keyboard shortcuts
+[ ] Note versioning
+[ ] Full-text search with PostgreSQL or Elasticsearch, conflict resolution for concurrent
 
-[x] Add shortcuts (keyboard) for most activities (e.g save, update and more)
-[] Add auto completion in the text editor powered by ai.
+[ ] Add shortcuts (keyboard) for most activities (e.g save, update and more)
+[ ] Add auto completion in the text editor powered by ai.
 
 ### Not really necessary
 
@@ -34,10 +34,10 @@
 
 ## Incomplete tasks
 
-[x] View all notes and archived notes separately
-[x] View notes filtered by specific tags
-[x] Form validation for required fields (with zod)
-[x] Markdown support with preview
+[] View all notes and archived notes separately
+[] View notes filtered by specific tags
+[] Form validation for required fields (with zod)
+[] Markdown support with preview
 
 ### Things to take note of and learn from
 

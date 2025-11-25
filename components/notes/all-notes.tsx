@@ -7,10 +7,13 @@ import { Suspense } from "react";
 import { useNotes } from "@/hooks";
 import { buildUrl, searchParamsSchema } from "../nuqs";
 import { SingleParserBuilder, useQueryStates } from "nuqs";
-import { parseDate } from "@/utils";
+import { parseDate, getHighlightSnippet } from "@/utils";
+import { highlightMatches } from "@/utils/highlight-utils";
 import { CurrentNote } from "@/types/TYPES";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const AllNotes = () => {
+  const isMobile = useIsMobile();
   const { setCurrentNote, newNote, setNewNote } = useAppStore();
   const pathName = usePathname();
   const [params, setParams] = useQueryStates(searchParamsSchema);
@@ -42,7 +45,7 @@ export const AllNotes = () => {
 
   return (
     <Suspense fallback={null}>
-      <div className="w-[290px] h-full border-left padding !pt-12 flex flex-col items-center gap-[16px]">
+      <div className={`${isMobile ? "w-full" : "w-[290px]"} h-full border-left padding !pt-12 flex flex-col items-center gap-[16px]`}>
         <div className="flex flex-col w-full border border-b-muted border-x-0 border-t-0 pb-2">
           <Button
             className={`flex items-center justify-center w-[242px] h-[41px] rounded-[12px] px-[16px] py-[12px] gap-[8px]`}
@@ -97,6 +100,21 @@ export const AllNotes = () => {
                 <h3 className="text-neutral-950 dark:text-white text-[16px] font-semibold">
                   {item.title}
                 </h3>
+                {query && query.trim() !== "" && (
+                  <p className="text-neutral-600 dark:text-neutral-300 text-xs line-clamp-2">
+                    {highlightMatches(
+                      getHighlightSnippet(
+                        typeof item.content === "string"
+                          ? item.content
+                          : JSON.stringify(item.content).substring(0, 300),
+                        query,
+                        80
+                      ),
+                      query,
+                      "bg-yellow-200 dark:bg-yellow-700 font-semibold"
+                    )}
+                  </p>
+                )}
                 <div className="flex items-center flex-wrap gap-[4px]">
                   {item.tags.map((item) => (
                     <span

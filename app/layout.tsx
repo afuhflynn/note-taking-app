@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.scss";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
@@ -8,6 +8,17 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 export const metadata: Metadata = {
   title: "Notes App",
   description: "A modern note-taking application",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
 };
 
 export default function RootLayout({

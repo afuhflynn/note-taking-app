@@ -4,6 +4,7 @@ import { ActionBar } from "./action-bar";
 import { useAppStore } from "@/store/app.store";
 import { NoteHeader } from "./note-header";
 import { SimpleEditor } from "../tiptap-templates/simple/simple-editor";
+import { SearchHighlightIndicator } from "./search-highlight-indicator";
 import { useQueryStates } from "nuqs";
 import { searchParamsSchema } from "../nuqs";
 import content from "@/public/data/content.json";
@@ -31,6 +32,8 @@ export const NoteCanvas = () => {
       {/* Note header (details) */}
       <NoteHeader noteId={currentNoteId as string} />
       <div className="w-full flex-1 max-h-[calc(100% - 142.15px)] overflow-auto flex flex-col relative">
+        {/* Search highlight indicator */}
+        <SearchHighlightIndicator content={newNote?.content || note?.content} />
         {/* Text editor */}
         <SimpleEditor
           key={newNote ? "new-note" : currentNoteId}

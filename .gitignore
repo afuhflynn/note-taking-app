@@ -56,3 +56,4 @@ next-env.d.ts
 
 # Authentication tokens
 .npmrc
+.nvii/

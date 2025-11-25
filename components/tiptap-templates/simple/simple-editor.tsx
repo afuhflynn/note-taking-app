@@ -74,6 +74,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAppStore } from "@/store/app.store";
 import { useAutoSave } from "@/hooks/use-auto-save";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useAICompletion } from "@/hooks/use-ai-completion";
+import { AISuggestionWidget } from "@/components/editor/ai-suggestion-widget";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -206,6 +208,8 @@ export function SimpleEditor({
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   );
+  const [aiSuggestion, setAiSuggestion] = useState<string>("");
+  const [showAiWidget, setShowAiWidget] = useState(false);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const {
     setEditContent,
@@ -218,11 +222,51 @@ export function SimpleEditor({
 
   // Auto-save hook
   const { isSaving, forceSave } = useAutoSave(2000); // 2 second debounce
+  const { completion, generateCompletion, isLoading: isAILoading } = useAICompletion({
+    onError(error) {
+      console.error({ error: `AI completion failed: ${error.message}` });
+      setShowAiWidget(false);
+    },
+    onSuccess(completion) {
+      console.log({ message: `AI completion went correctly: ${completion}` });
+      setAiSuggestion(completion);
+      setShowAiWidget(true);
+    },
+  });
 
   // Keyboard shortcuts
   useKeyboardShortcuts({
     onSave: forceSave,
   });
+
+  // AI suggestion handlers
+  const handleAcceptSuggestion = () => {
+    if (!editor || !aiSuggestion) return;
+
+    const { from } = editor.state.selection;
+    editor.chain()
+      .focus()
+      .insertContentAt(from, aiSuggestion)
+      .run();
+
+    setAiSuggestion("");
+    setShowAiWidget(false);
+  };
+
+  const handleRejectSuggestion = () => {
+    setAiSuggestion("");
+    setShowAiWidget(false);
+  };
+
+  const handleTriggerAI = async () => {
+    if (!editor) return;
+
+    const { from, to } = editor.state.selection;
+    const text = editor.state.doc.textBetween(0, from);
+
+    setShowAiWidget(true);
+    await generateCompletion(text.slice(-100)); // Use last 100 chars as context
+  };
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -264,6 +308,7 @@ export function SimpleEditor({
     ],
     content: content || "",
     onUpdate(props) {
+      // generateCompletion(props.editor.$doc.textContent);
       if (props && props.editor?.isFocused) {
         console.log({
           before: props.editor.$doc?.from,
@@ -302,6 +347,35 @@ export function SimpleEditor({
     }
   }, [isMobile, mobileView]);
 
+  // AI suggestion keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const modKey = isMac ? e.metaKey : e.ctrlKey;
+
+      // Ctrl/Cmd + Space: Trigger AI completion
+      if (modKey && e.code === "Space") {
+        e.preventDefault();
+        handleTriggerAI();
+      }
+
+      // Tab: Accept suggestion (only if widget is visible)
+      if (e.key === "Tab" && showAiWidget && aiSuggestion) {
+        e.preventDefault();
+        handleAcceptSuggestion();
+      }
+
+      // Escape: Reject suggestion
+      if (e.key === "Escape" && showAiWidget) {
+        e.preventDefault();
+        handleRejectSuggestion();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showAiWidget, aiSuggestion, editor]);
+
   return (
     <div className={cn("simple-editor-wrapper", className)}>
       <EditorContext.Provider value={{ editor }}>
@@ -335,6 +409,17 @@ export function SimpleEditor({
           role="presentation"
           className={cn("simple-editor-content", contentClass)}
         />
+        
+        {/* AI Suggestion Widget */}
+        {showAiWidget && (
+          <AISuggestionWidget
+            editor={editor}
+            suggestion={aiSuggestion}
+            isLoading={isAILoading}
+            onAccept={handleAcceptSuggestion}
+            onReject={handleRejectSuggestion}
+          />
+        )}
       </EditorContext.Provider>
     </div>
   );

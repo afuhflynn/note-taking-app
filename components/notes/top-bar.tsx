@@ -13,7 +13,7 @@ export const TopBar = () => {
 
   return (
     <Suspense fallback={null}>
-      <header className="w-full flex items-center justify-between px-[32px] items-between h-[70px] py-2 !pb-0 border border-b-muted border-x-0 border-t-0">
+      <header className="w-full flex items-center justify-between px-[32px] items-between h-[70px] py-8 border border-b-muted border-x-0 border-t-0">
         {query && query.trim() !== "" ? (
           <h1 className="text-2xl text-neutral-950 dark:text-white">
             <span className="text-neutral-300">Showing results for:</span>{" "}

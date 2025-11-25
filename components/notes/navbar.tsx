@@ -44,8 +44,10 @@ export const NavBar = () => {
               <Button
                 asChild
                 key={`${item.id}-${index}`}
-                className={`flex items-center justify-start w-[240px] h-[40px] rounded-[8px] px-[12px] py-[10px] gap-[8px]`}
-                variant={item.isActive ? "secondary" : "ghost"}
+                className={`flex items-center justify-start w-[240px] h-[40px] rounded-[8px] px-[12px] py-[10px] gap-[8px] ${
+                  item.isActive ? " bg-accent dark:bg-accent/50" : ""
+                }`}
+                variant={"ghost"}
                 size={"lg"}
               >
                 <Link
@@ -133,8 +135,10 @@ export const NavBar = () => {
               {tags.map((item, index) => (
                 <Button
                   key={`${item.tagId}-${index}`}
-                  className="flex items-center justify-start w-full h-[40px] rounded-[8px] px-[12px] py-[10px] gap-[12px] capitalize"
-                  variant={tag === item.name ? "secondary" : "ghost"}
+                  className={`flex items-center justify-start w-full h-[40px] rounded-[8px] px-[12px] py-[10px] gap-[12px] capitalize ${
+                    tag === item.name ? " bg-accent dark:bg-accent/50" : ""
+                  }`}
+                  variant={"ghost"}
                   asChild
                 >
                   <Link

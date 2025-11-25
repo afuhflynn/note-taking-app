@@ -1,5 +1,7 @@
-import { useCompletion } from "ai/react";
+import { useCompletion } from "@ai-sdk/react";
 import { useCallback } from "react";
+import { useOnlineStatus } from "./use-online-status";
+import { toast } from "sonner";
 
 export interface UseAICompletionOptions {
   onSuccess?: (completion: string) => void;
@@ -8,6 +10,7 @@ export interface UseAICompletionOptions {
 
 export function useAICompletion(options: UseAICompletionOptions = {}) {
   const { onSuccess, onError } = options;
+  const isOnline = useOnlineStatus();
 
   const { completion, complete, isLoading, error, stop, setCompletion } =
     useCompletion({
@@ -26,6 +29,12 @@ export function useAICompletion(options: UseAICompletionOptions = {}) {
 
   const generateCompletion = useCallback(
     async (prompt: string, context: string = "") => {
+      // Check if online before attempting AI completion
+      if (!isOnline) {
+        toast.error("AI completion requires internet connection");
+        return;
+      }
+
       try {
         await complete(prompt, {
           body: {
@@ -34,9 +43,10 @@ export function useAICompletion(options: UseAICompletionOptions = {}) {
         });
       } catch (err) {
         console.error("AI completion error:", err);
+        toast.error("AI completion failed. Please try again.");
       }
     },
-    [complete]
+    [complete, isOnline]
   );
 
   const clearCompletion = useCallback(() => {
@@ -50,5 +60,6 @@ export function useAICompletion(options: UseAICompletionOptions = {}) {
     error,
     stop,
     clearCompletion,
+    isOnline,
   };
 }
