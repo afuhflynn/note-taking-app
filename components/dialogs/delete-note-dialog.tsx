@@ -13,14 +13,28 @@ import { useDeleteNote } from "@/hooks";
 import Image from "next/image";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
+import { useQueryStates } from "nuqs";
+import { searchParamsSchema } from "../nuqs";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export const DeleteNoteDialog = () => {
-  const { currentNote } = useAppStore();
-  const { deleteNote } = useDeleteNote();
+  const { currentNote, setCurrentNote } = useAppStore();
+  const [params, setParams] = useQueryStates(searchParamsSchema);
+  const { deleteNote } = useDeleteNote({
+    filter: params.filter,
+    query: params.query,
+    tag: params.tag,
+  });
   const [open, onOpenChange] = useState(false);
+
+  useKeyboardShortcuts({
+    onDelete() {
+      onOpenChange((prev) => !prev);
+    },
+  });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-delete-note-dialog-trigger>
         <Button
           variant={"outline"}
           size={"lg"}
@@ -87,6 +101,8 @@ export const DeleteNoteDialog = () => {
             onClick={() => {
               deleteNote(currentNote?.id!);
               onOpenChange(false);
+              setParams({ ...params, id: null });
+              setCurrentNote(null);
             }}
           >
             Delete

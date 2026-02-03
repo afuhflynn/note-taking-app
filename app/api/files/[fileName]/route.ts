@@ -1,12 +1,16 @@
-import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
 import { s3 } from "@/utils/minio-client";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 export async function GET(
-  _: NextRequest,
-  { params }: { params: Promise<{ fileName: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ fileName: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -16,7 +20,7 @@ export async function GET(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -42,14 +46,14 @@ export async function GET(
         error: "Error fetching image",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
-  _: NextRequest,
-  { params }: { params: Promise<{ fileName: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ fileName: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -59,7 +63,7 @@ export async function DELETE(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -72,14 +76,25 @@ export async function DELETE(
       Key: objectKey,
     });
 
-    await s3.send(cmd);
+    const deleteRequest = await s3.send(cmd);
+
+    if (!deleteRequest) {
+      return NextResponse.json(
+        {
+          error: "Failed to delete image",
+        },
+        {
+          status: 500,
+        },
+      );
+    }
 
     return NextResponse.json(
       {
         message: "File deleted successfully.",
         success: false,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error(error);
@@ -88,7 +103,7 @@ export async function DELETE(
         error: "Error deleting image",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -13,14 +13,28 @@ import { useArchiveNote } from "@/hooks";
 import Image from "next/image";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
+import { useQueryStates } from "nuqs";
+import { searchParamsSchema } from "../nuqs";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export const RestoreNoteDialog = () => {
   const { currentNote } = useAppStore();
   const [open, onOpenChange] = useState(false);
-  const { arhiveNote } = useArchiveNote();
+  const [params, setParams] = useQueryStates(searchParamsSchema);
+  const { arhiveNote } = useArchiveNote({
+    filter: params.filter,
+    query: params.query,
+    tag: params.tag,
+  });
+
+  useKeyboardShortcuts({
+    onRestore() {
+      onOpenChange((prev) => !prev);
+    },
+  });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-restore-note-dialog-trigger>
         <Button
           variant={"outline"}
           size={"lg"}
@@ -86,6 +100,7 @@ export const RestoreNoteDialog = () => {
             onClick={() => {
               arhiveNote(currentNote?.id!);
               onOpenChange(false);
+              setParams({ ...params, id: null });
             }}
           >
             Restore Note

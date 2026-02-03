@@ -16,9 +16,7 @@ export const NavBar = () => {
       <nav className="mx-auto px-6 md:px-12 lg:px-20">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center" prefetch>
-            <NotesLogo className="dark:fill-white transition-opacity hover:opacity-80" />
-          </Link>
+          <NotesLogo className="dark:fill-white transition-opacity hover:opacity-80" />
 
           {/* Right Section */}
           <div className="flex items-center gap-3">
@@ -32,12 +30,12 @@ export const NavBar = () => {
               </Button>
             </Link>
 
-            <Link href="/sign-up" prefetch>
+            <Link href="/editor" prefetch>
               <Button
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
               >
-                Get Started
+                Try out the editor
               </Button>
             </Link>
           </div>

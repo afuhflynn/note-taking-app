@@ -1,31 +1,9 @@
 import { Search } from "lucide-react";
-import { useQueryStates } from "nuqs";
-import { useState, useEffect } from "react";
+import { debounce, useQueryStates } from "nuqs";
 import { searchParamsSchema } from "../nuqs";
-import { useAppStore } from "@/store/app.store";
 
 export const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [params, setParams] = useQueryStates(searchParamsSchema);
-  const { setSearchQuery: setStoreSearchQuery } = useAppStore();
-
-  useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      setParams(
-        {
-          query: searchQuery,
-        },
-        {
-          // limitUrlUpdates: searchQuery.trim() ? debounce(600) : undefined,
-          shallow: false,
-        }
-      );
-      // Update store for highlighting
-      setStoreSearchQuery(searchQuery);
-    }, 600);
-
-    return () => clearTimeout(timeOutId);
-  }, [searchQuery, setParams, setStoreSearchQuery]);
 
   return (
     <div className="w-[300px] h-[44px] p-[16px] px-[14px] gap-[8px] flex items-center rounded-[8px] border">
@@ -33,9 +11,22 @@ export const SearchBar = () => {
       <input
         name="search-query"
         placeholder="Search by title, content, or tags..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        value={params.query}
+        onChange={(e) =>
+          setParams(
+            {
+              query: e.target.value,
+            },
+            {
+              limitUrlUpdates: e.target.value.trim()
+                ? debounce(600)
+                : undefined,
+              shallow: false,
+            },
+          )
+        }
         type="text"
+        data-search-box
         className="border-none p-0 focus-visible:ring-0 bg-transparent focus:outline-none ring-offset-0 appearance-none flex-1 text-lg placeholder:text-sm"
       />
     </div>

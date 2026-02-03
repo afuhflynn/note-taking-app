@@ -1,7 +1,7 @@
 import { searchParamsSchema } from "@/components/nuqs";
 import { api } from "@/lib/api-client";
 import { useAppStore } from "@/store/app.store";
-import { CurrentNote, NewNotes, UpdateNoteData } from "@/types/TYPES";
+import { CurrentNote, NewNote, UpdateNoteData, UtilTypes } from "@/types/TYPES";
 import { constrcutParams } from "@/utils";
 import {
   QueryClient,
@@ -38,15 +38,7 @@ export function useUserData() {
 }
 
 // ==================== GET ALL NOTES ====================
-export function useNotes({
-  filter,
-  query,
-  tag,
-}: {
-  filter: string | null;
-  query: string | null;
-  tag: string | null;
-}) {
+export function useNotes({ filter, query, tag }: UtilTypes) {
   const {
     data: notes,
     isPending,
@@ -79,14 +71,14 @@ export function useNotes({
 }
 
 // ==================== CREATE NOTE ====================
-export function useCreateNote(data: NewNotes) {
+export function useCreateNote() {
   const { setNewNote } = useAppStore();
   const router = useRouter();
   const queryClient = new QueryClient();
 
   const { mutate, error, isPending, mutateAsync } = useMutation({
-    mutationFn: async () => await api.note.create(data),
-    mutationKey: ["create-note", data?.title],
+    mutationFn: async (data: NewNote) => await api.note.create(data),
+    mutationKey: ["create-note"],
     onSuccess: async (response) => {
       // Invalidate and refetch to ensure UI updates
       await Promise.all([
@@ -175,7 +167,7 @@ export function useUpdateNote() {
       if (context?.previousNote) {
         queryClient.setQueryData(
           ["note", updatedNote.id],
-          context.previousNote
+          context.previousNote,
         );
       }
       if (context?.previousNotes) {
@@ -211,7 +203,7 @@ export function useUpdateNote() {
 }
 
 // ==================== DELETE NOTE ====================
-export function useDeleteNote() {
+export function useDeleteNote({ filter, query, tag }: UtilTypes) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { setCurrentNote } = useAppStore();
@@ -221,29 +213,42 @@ export function useDeleteNote() {
 
     onMutate: async (noteId) => {
       // Cancel queries
-      await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+      await queryClient.cancelQueries({
+        queryKey: ["user-notes", filter, query, tag],
+      });
 
       // Snapshot
-      const previousNotes = queryClient.getQueryData(["user-notes"]);
+      const previousNotes = queryClient.getQueryData([
+        "user-notes",
+        filter,
+        query,
+        tag,
+      ]);
 
       // Optimistically remove from list
-      queryClient.setQueryData(["user-notes"], (old: any) => {
-        if (!old) return old;
-        return old.filter((note: any) => note.id !== noteId);
-      });
+      queryClient.setQueryData(
+        ["user-notes", filter, query, tag],
+        (old: any) => {
+          if (!old) return old;
+          return old.filter((note: any) => note.id !== noteId);
+        },
+      );
 
       return { previousNotes };
     },
 
-    onError: (err, noteId, context) => {
+    onError: (_err, _noteId, context) => {
       // Rollback
       if (context?.previousNotes) {
-        queryClient.setQueryData(["user-notes"], context.previousNotes);
+        queryClient.setQueryData(
+          ["user-notes", filter, query, tag],
+          context.previousNotes,
+        );
       }
       toast.error("Failed to delete note");
     },
 
-    onSuccess: (data, noteId) => {
+    onSuccess: (_data, noteId) => {
       toast.success("Note deleted successfully");
 
       // Remove from cache
@@ -253,11 +258,13 @@ export function useDeleteNote() {
       setCurrentNote(null);
 
       // Navigate away
-      router.push("/notes");
+      // router.push("/notes");
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-notes"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user-notes", filter, query, tag],
+      });
       queryClient.invalidateQueries({ queryKey: ["user-notes-tags"] });
     },
   });
@@ -270,7 +277,7 @@ export function useDeleteNote() {
 }
 
 // ==================== ARCHIVE NOTE ====================
-export function useArchiveNote() {
+export function useArchiveNote({ filter, query, tag }: UtilTypes) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { setCurrentNote } = useAppStore();
@@ -280,29 +287,42 @@ export function useArchiveNote() {
 
     onMutate: async (noteId) => {
       // Cancel queries
-      await queryClient.cancelQueries({ queryKey: ["user-notes"] });
+      await queryClient.cancelQueries({
+        queryKey: ["user-notes", filter, query, tag],
+      });
 
       // Snapshot
-      const previousNotes = queryClient.getQueryData(["user-notes"]);
+      const previousNotes = queryClient.getQueryData([
+        "user-notes",
+        filter,
+        query,
+        tag,
+      ]);
 
       // Optimistically remove from list
-      queryClient.setQueryData(["user-notes"], (old: any) => {
-        if (!old) return old;
-        return old.filter((note: any) => note.id !== noteId);
-      });
+      queryClient.setQueryData(
+        ["user-notes", filter, query, tag],
+        (old: any) => {
+          if (!old) return old;
+          return old.filter((note: any) => note.id !== noteId);
+        },
+      );
 
       return { previousNotes };
     },
 
-    onError: (err, noteId, context) => {
+    onError: (_err, _noteId, context) => {
       // Rollback
       if (context?.previousNotes) {
-        queryClient.setQueryData(["user-notes"], context.previousNotes);
+        queryClient.setQueryData(
+          ["user-notes", filter, query, tag],
+          context.previousNotes,
+        );
       }
       toast.error("Failed to archive note");
     },
 
-    onSuccess: (data, noteId) => {
+    onSuccess: (_data, noteId) => {
       toast.success("Note archived successfully");
 
       // Remove from cache
@@ -312,7 +332,7 @@ export function useArchiveNote() {
       setCurrentNote(null);
 
       // Navigate away
-      router.push("/notes");
+      // router.push("/notes");
     },
 
     onSettled: () => {

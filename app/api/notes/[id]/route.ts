@@ -3,15 +3,15 @@ import { publish } from "@/lib/pubsub";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateSlug, parseEditorContent, parseTags } from "@/utils";
-import { creatNoteSchema, updateNoteSchema } from "@/zod/zod.schema";
+import { updateNoteSchema } from "@/zod/zod.schema";
 import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromTiptapContent } from "@/lib/content-parser";
 import { createNoteVersion } from "@/lib/note-versioning";
 
 // get a single note based on it's id
 export async function GET(
-  _: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
   const { id } = await params;
@@ -22,7 +22,7 @@ export async function GET(
         error: "Note ID is required",
         success: false,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -32,7 +32,7 @@ export async function GET(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -65,7 +65,7 @@ export async function GET(
           error: "No note found!",
           success: false,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -77,7 +77,7 @@ export async function GET(
         error: "An unexptected error occurred getting note.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -85,7 +85,7 @@ export async function GET(
 // Update a note
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -95,7 +95,7 @@ export async function PUT(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -109,7 +109,7 @@ export async function PUT(
         "Something went wrong: ",
         validatedData.error.message,
         "tags: ",
-        body["tags"]
+        body["tags"],
       );
       const error = JSON.parse(validatedData.error.message);
       return NextResponse.json(
@@ -117,7 +117,7 @@ export async function PUT(
           error: error[0]?.message || "Validation failed",
           success: false,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -139,10 +139,10 @@ export async function PUT(
           const tag = await tx.tag.upsert({
             where: { name: tagName },
             update: {}, // If tag exists, don't update anything
-            create: { name: tagName },
+            create: { name: tagName, userId: session.user.id },
           });
           return { tagId: tag.tagId };
-        })
+        }),
       );
 
       // get all tags to disconnect the usr from and then reconnect to the newly created or connected tags from above.
@@ -210,7 +210,7 @@ export async function PUT(
         error: "An unexpected error occurred updating note.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -218,7 +218,7 @@ export async function PUT(
 // Archive a note
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -228,7 +228,7 @@ export async function PATCH(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -248,7 +248,7 @@ export async function PATCH(
           error: "No note found!",
           success: false,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -270,7 +270,7 @@ export async function PATCH(
         error: "An unexpected error occurred archiving note.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -278,7 +278,7 @@ export async function PATCH(
 // Delte a note
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -288,7 +288,7 @@ export async function DELETE(
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -310,7 +310,7 @@ export async function DELETE(
         error: "An unexpected error occurred deleting note.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

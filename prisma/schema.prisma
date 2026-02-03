@@ -46,6 +46,7 @@ model User {
   sharedNotes                     SharedNote[]
   noteCollaborators               NoteCollaborator[]
   drawingAssets                   DrawingAsset[]
+  tags                            Tag[]
 
   @@unique([email])
   @@map("user")
@@ -109,13 +110,15 @@ model UserSetting {
 
 model Tag {
   tagId     String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String   @unique // Make name globally unique
   createdAt DateTime @default(now())
 
   // Relations
   notes Note[]
 
-  @@index([name]) // Index for tag lookups
+  @@index([name, userId]) // Index for tag lookups
 }
 
 model Note {

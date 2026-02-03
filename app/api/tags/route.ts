@@ -13,11 +13,15 @@ export async function GET(_: NextRequest) {
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
-    const tags = await prisma.tag.findMany();
+    const tags = await prisma.tag.findMany({
+      where: {
+        userId: session.user.id,
+      },
+    });
 
     if (!tags) {
       return NextResponse.json(
@@ -25,7 +29,7 @@ export async function GET(_: NextRequest) {
           error: "No tags found!",
           success: false,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -37,7 +41,7 @@ export async function GET(_: NextRequest) {
         error: "An unexptected error occurred getting tags.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

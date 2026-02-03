@@ -30,8 +30,8 @@ export interface AppStore {
   setCurrentNote: (note: CurrentNote | null) => void;
   notes: Note[];
   setNotes: (notes: Note[]) => void;
-  newNote: NewNotes | null;
-  setNewNote: (newNote: NewNotes | null) => void;
+  newNote: NewNote | null;
+  setNewNote: (newNote: NewNote | null) => void;
   isEditingTitle: boolean;
   setIsEditingTitle: (isEditingTitle: boolean) => void;
   isEditingTags: boolean;
@@ -46,11 +46,29 @@ export interface AppStore {
   setEditContent: (editContent: JsonValue) => void;
   contentUpdated: boolean;
   setContentUpdated: (value: boolean) => void;
+  setSearchQuery: (value: string) => void;
+  searchQuery: string | null;
 }
 
-export interface NewNotes {
+export interface NewNote {
   title?: string;
   content?: string;
   tags?: string;
   size?: number;
 }
+
+export interface UtilTypes {
+  filter: string | null;
+  query: string | null;
+  tag: string | null;
+}
+
+export type ModalTypes =
+  | "create-note"
+  | "settings"
+  | "upload-image"
+  | "upload-youtube"
+  | "delete-note"
+  | "share-note"
+  | "save-note"
+  | "version-history";

@@ -7,7 +7,7 @@
  */
 
 import { privateAxios } from "@/config/axios.config";
-import { CurrentNote, NewNotes, UpdateNoteData } from "@/types/TYPES";
+import { CurrentNote, NewNote, UpdateNoteData } from "@/types/TYPES";
 import { Note, Tag, User } from "@prisma/client";
 
 // Helper function for making authenticated requests
@@ -16,14 +16,14 @@ async function apiRequest<T>(
   options: {
     body?: any;
     method: "POST" | "PUT" | "PATCH" | "DELETE" | "GET";
-  }
+  },
 ): Promise<T | null> {
   switch (options.method) {
     case "GET":
       try {
         const response = await privateAxios.get<any | null>(
           endpoint,
-          options.body ?? {}
+          options.body ?? {},
         );
 
         const data = response?.data;
@@ -38,7 +38,7 @@ async function apiRequest<T>(
       try {
         const response = await privateAxios.delete<any | null>(
           endpoint,
-          options.body ?? {}
+          options.body ?? {},
         );
 
         const data = response?.data;
@@ -53,7 +53,7 @@ async function apiRequest<T>(
       try {
         const response = await privateAxios.post<any | null>(
           endpoint,
-          options.body ?? {}
+          options.body ?? {},
         );
         const data = response?.data;
         return data;
@@ -67,7 +67,7 @@ async function apiRequest<T>(
       try {
         const response = await privateAxios.put<any | null>(
           endpoint,
-          options.body ?? {}
+          options.body ?? {},
         );
         const data = response?.data;
         return data;
@@ -81,7 +81,7 @@ async function apiRequest<T>(
       try {
         const response = await privateAxios.patch<any | null>(
           endpoint,
-          options.body ?? {}
+          options.body ?? {},
         );
         const data = response?.data;
         return data;
@@ -115,7 +115,7 @@ export const api = {
     getSingle: async ({ noteId }: { noteId: string }) =>
       await apiRequest<CurrentNote>(`/notes/${noteId}`, { method: "GET" }),
 
-    create: async (data: NewNotes) =>
+    create: async (data: NewNote) =>
       apiRequest<CurrentNote>("/notes", { method: "POST", body: data }),
     update: async (data: UpdateNoteData, id: string) =>
       apiRequest<CurrentNote>(`/notes/${id}`, { method: "PUT", body: data }),
@@ -126,5 +126,11 @@ export const api = {
   },
   tag: {
     getAll: async () => await apiRequest<Tag[]>("/tags", { method: "GET" }),
+  },
+  images: {
+    deleteImage: async (imageKey: string) =>
+      await apiRequest<{ message: string }>(`/files/${imageKey}`, {
+        method: "DELETE",
+      }),
   },
 };

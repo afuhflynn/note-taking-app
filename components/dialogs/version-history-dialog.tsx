@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { useAppStore } from "@/store/app.store";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 interface NoteVersion {
   id: string;
@@ -35,26 +36,10 @@ interface VersionHistoryDialogProps {
 export function VersionHistoryDialog({ noteId }: VersionHistoryDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState<NoteVersion | null>(
-    null
+    null,
   );
   const queryClient = useQueryClient();
   const { currentNote } = useAppStore();
-
-  // Listen for keyboard shortcut
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-      const modKey = isMac ? e.metaKey : e.ctrlKey;
-
-      if (modKey && e.shiftKey && e.key === "H") {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
   // Fetch version history
   const { data: versionsData, isLoading } = useQuery({
@@ -96,9 +81,15 @@ export function VersionHistoryDialog({ noteId }: VersionHistoryDialogProps) {
     restoreVersion.mutate(version.versionNumber);
   };
 
+  useKeyboardShortcuts({
+    onVersionHistory() {
+      setOpen((prev) => !prev);
+    },
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-version-history-dialog-trigger>
         <Button variant="ghost" size="sm" className="gap-2">
           <Clock className="h-4 w-4" />
           <span className="hidden sm:inline">History</span>
@@ -188,7 +179,7 @@ export function VersionHistoryDialog({ noteId }: VersionHistoryDialogProps) {
                           new Date(selectedVersion.createdAt),
                           {
                             addSuffix: true,
-                          }
+                          },
                         )}
                       </p>
                     </div>
@@ -203,7 +194,7 @@ export function VersionHistoryDialog({ noteId }: VersionHistoryDialogProps) {
                           : JSON.stringify(
                               selectedVersion.contentSnapshot,
                               null,
-                              2
+                              2,
                             )}
                       </p>
                     </div>

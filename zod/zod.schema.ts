@@ -260,9 +260,6 @@ export const updateNoteSchema = z.object({
     .max(400, {
       message: "A valid note tags must not be more than 400 characters",
     })
-    .min(1, {
-      message: "A valid note tags must be at least 1 character.",
-    })
     .optional(),
   content: z.any().optional(),
   size: z.number().optional(),

@@ -76,6 +76,8 @@ import { useAutoSave } from "@/hooks/use-auto-save";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { useAICompletion } from "@/hooks/use-ai-completion";
 import { AISuggestionWidget } from "@/components/editor/ai-suggestion-widget";
+import { api } from "@/lib/api-client";
+import { toast } from "sonner";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -206,7 +208,7 @@ export function SimpleEditor({
   const isMobile = useIsBreakpoint();
   const { height } = useWindowSize();
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
-    "main"
+    "main",
   );
   const [aiSuggestion, setAiSuggestion] = useState<string>("");
   const [showAiWidget, setShowAiWidget] = useState(false);
@@ -221,8 +223,8 @@ export function SimpleEditor({
   } = useAppStore();
 
   // Auto-save hook
-  const { isSaving, forceSave } = useAutoSave(2000); // 2 second debounce
-  const { completion, generateCompletion, isLoading: isAILoading } = useAICompletion({
+  const { forceSave } = useAutoSave(2000); // 2 second debounce
+  const { generateCompletion, isLoading: isAILoading } = useAICompletion({
     onError(error) {
       console.error({ error: `AI completion failed: ${error.message}` });
       setShowAiWidget(false);
@@ -234,20 +236,12 @@ export function SimpleEditor({
     },
   });
 
-  // Keyboard shortcuts
-  useKeyboardShortcuts({
-    onSave: forceSave,
-  });
-
   // AI suggestion handlers
   const handleAcceptSuggestion = () => {
     if (!editor || !aiSuggestion) return;
 
     const { from } = editor.state.selection;
-    editor.chain()
-      .focus()
-      .insertContentAt(from, aiSuggestion)
-      .run();
+    editor.chain().focus().insertContentAt(from, aiSuggestion).run();
 
     setAiSuggestion("");
     setShowAiWidget(false);
@@ -310,10 +304,43 @@ export function SimpleEditor({
     onUpdate(props) {
       // generateCompletion(props.editor.$doc.textContent);
       if (props && props.editor?.isFocused) {
-        console.log({
-          before: props.editor.$doc?.from,
-          after: props.editor?.$doc.textContent.trim(),
-        });
+        const handleDeleteRemovedFiles = async () => {
+          const imagesAfter = props.editor?.$doc?.content.content.filter(
+            (item) => item.type.name === "image",
+          );
+          const imagesBefore = props.transaction.before.content.content.filter(
+            (item) => item.type.name === "image",
+          );
+
+          for (const image of imagesBefore) {
+            // check if image existed previously
+            const stillPresent = imagesAfter.find(
+              (img) => img.attrs?.src === image.attrs?.src,
+            );
+
+            if (!stillPresent) {
+              // exit for invalid files
+              if (!(image.attrs?.src as string).startsWith("/api/files/")) {
+                return;
+              }
+              try {
+                // @highlight: Send request to delete the image (from object storage)
+                await api.images.deleteImage(
+                  (image.attrs?.src as string).replace("/api/files/", ""),
+                );
+              } catch (error: Error | any) {
+                if (error?.response?.data) {
+                  toast.error(
+                    error.response.data.error ??
+                      "Error deleting image from remote storage",
+                  );
+                }
+              }
+            }
+          }
+        };
+
+        handleDeleteRemovedFiles();
 
         if (props.editor?.$doc.size !== currentNote?.size!) {
           setContentUpdated(true);
@@ -347,34 +374,13 @@ export function SimpleEditor({
     }
   }, [isMobile, mobileView]);
 
-  // AI suggestion keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-      const modKey = isMac ? e.metaKey : e.ctrlKey;
-
-      // Ctrl/Cmd + Space: Trigger AI completion
-      if (modKey && e.code === "Space") {
-        e.preventDefault();
-        handleTriggerAI();
-      }
-
-      // Tab: Accept suggestion (only if widget is visible)
-      if (e.key === "Tab" && showAiWidget && aiSuggestion) {
-        e.preventDefault();
-        handleAcceptSuggestion();
-      }
-
-      // Escape: Reject suggestion
-      if (e.key === "Escape" && showAiWidget) {
-        e.preventDefault();
-        handleRejectSuggestion();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showAiWidget, aiSuggestion, editor]);
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onSave: forceSave,
+    handleTriggerAI,
+    handleAcceptSuggestion,
+    handleRejectSuggestion,
+  });
 
   return (
     <div className={cn("simple-editor-wrapper", className)}>
@@ -409,7 +415,7 @@ export function SimpleEditor({
           role="presentation"
           className={cn("simple-editor-content", contentClass)}
         />
-        
+
         {/* AI Suggestion Widget */}
         {showAiWidget && (
           <AISuggestionWidget

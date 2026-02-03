@@ -11,6 +11,7 @@ import { parseDate, getHighlightSnippet } from "@/utils";
 import { highlightMatches } from "@/utils/highlight-utils";
 import { CurrentNote } from "@/types/TYPES";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export const AllNotes = () => {
   const isMobile = useIsMobile();
@@ -33,9 +34,15 @@ export const AllNotes = () => {
     setCurrentNote(null);
     setParams({
       id: null,
+      filter: null,
+      query: null,
     });
     router.prefetch("/notes");
   };
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onNewNote: handleCreateClick,
+  });
 
   const handleNoteClick = ({ currentNote }: { currentNote: CurrentNote }) => {
     setNewNote(null);
@@ -45,7 +52,9 @@ export const AllNotes = () => {
 
   return (
     <Suspense fallback={null}>
-      <div className={`${isMobile ? "w-full" : "w-[290px]"} h-full border-left padding !pt-12 flex flex-col items-center gap-[16px]`}>
+      <div
+        className={`${isMobile ? "w-full" : "w-[290px]"} h-full border-left padding !pt-12 flex flex-col items-center gap-[16px]`}
+      >
         <div className="flex flex-col w-full border border-b-muted border-x-0 border-t-0 pb-2">
           <Button
             className={`flex items-center justify-center w-[242px] h-[41px] rounded-[12px] px-[16px] py-[12px] gap-[8px]`}
@@ -89,7 +98,7 @@ export const AllNotes = () => {
                   {
                     id: item.id as unknown as SingleParserBuilder<string>,
                   },
-                  params
+                  params,
                 )}
                 className={`min-h-[110px] h-auto w-[242] rounded-[6px] p-[8px] gap-[12px] flex flex-col items-start ${
                   item.id === currentNoteId
@@ -108,10 +117,10 @@ export const AllNotes = () => {
                           ? item.content
                           : JSON.stringify(item.content).substring(0, 300),
                         query,
-                        80
+                        80,
                       ),
                       query,
-                      "bg-yellow-200 dark:bg-yellow-700 font-semibold"
+                      "bg-yellow-200 dark:bg-yellow-700 font-semibold",
                     )}
                   </p>
                 )}

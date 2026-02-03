@@ -5,7 +5,7 @@ import { Clock, Tag } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { toast } from "sonner";
 
-export const NoteHeader = ({ noteId }: { noteId: string }) => {
+export const NoteHeader = () => {
   const {
     newNote,
     setNewNote,
@@ -32,6 +32,7 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
       console.log(`You are: ${isOnline ? "ONLINE" : "OFFLINE"}`, isOnline);
     }
   }, [isOnline]);
+
   // Auto-focus when editing starts
   useEffect(() => {
     if (isEditingTitle && titleInputRef.current) {
@@ -183,15 +184,14 @@ export const NoteHeader = ({ noteId }: { noteId: string }) => {
                 className="flex items-center gap-2 text-[14px] cursor-pointer hover:bg-muted/50 rounded px-2 py-1 -mx-2 transition-colors min-h-[28px]"
               >
                 {note?.tags && note.tags.length > 0 ? (
-                  // note.tags.map((item, index) => (
-                  //   <span key={`${item.name}-${index}`}>
-                  //     {item.name}
-                  //     {index < note.tags.length - 1 && ", "}
-                  //   </span>
-                  // ))
-
-                  <span>{editTags}</span>
+                  note.tags.map((item, index) => (
+                    <span key={`${item.name}-${index}`}>
+                      {item.name}
+                      {index < note.tags.length - 1 && ", "}
+                    </span>
+                  ))
                 ) : (
+                  // <span>{editTags}</span>
                   <span className="text-muted-foreground italic">
                     Double-Click to add tags
                   </span>

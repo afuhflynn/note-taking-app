@@ -22,8 +22,7 @@ import { toast } from "sonner";
 import { Info, InfoIcon } from "lucide-react";
 
 export const SignUpForm = () => {
-  const { setError, setMessage, loading, setLoading, signUpUser } =
-    useUserStore();
+  const { setError, setMessage, loading, setLoading } = useUserStore();
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(signUpSchema),
@@ -36,35 +35,38 @@ export const SignUpForm = () => {
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     setLoading(true);
-    try {
-      const { error } = await signUp.email({
-        email: values.email,
-        password: values.password,
-        name: values.name || "User",
-      });
 
-      if (error) {
-        setError(error.message);
-        toast.error(error.message);
-      } else {
-        setMessage(
-          "Sign up successful! Please check your email to verify your account."
-        );
-        toast.success(
-          "Sign up successful! Please check your email to verify your account."
-        );
-      }
+    await signUp.email({
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      fetchOptions: {
+        onSuccess() {
+          toast.success("Account created successfully.");
+          // Send user a verification email
+          // await signUpUser({ email: values.email }); // TODO: REMOVE THIS LATER FOR INTERNET USAGE
 
-      // Send user a verification email
-      // await signUpUser({ email: values.email }); // TODO: REMOVE THIS LATER FOR INTERNET USAGE
-      toast.success("Account created successfully.");
-      // router.push("/verify-email"); // TODO: Ensure correct redirect
-    } catch (error) {
-      console.error(error);
-      setError((error as Error).message);
-    } finally {
-      setLoading(false);
-    }
+          // router.push("/verify-email"); // TODO: Ensure correct redirect
+          router.push("/sign-in");
+        },
+        onError(context) {
+          const error = context.error;
+          if (error) {
+            setError(error.message);
+            toast.error(error.message);
+          } else {
+            setMessage(
+              "Sign up successful! Please check your email to verify your account.",
+            );
+            toast.success(
+              "Sign up successful! Please check your email to verify your account.",
+            );
+          }
+        },
+      },
+    });
+
+    setLoading(false);
   };
   return (
     <Form {...form}>

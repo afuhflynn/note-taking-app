@@ -42,18 +42,18 @@ export const HeroSection = () => {
             animate="visible"
           >
             {/* Badge */}
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={{ fadeInUp }}>
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 text-blue-700 dark:text-blue-300 text-sm font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                 Turn ideas into organized notes
               </span>
             </motion.div>
 
             {/* Heading */}
-            <motion.div variants={fadeInUp} className="space-y-4">
+            <motion.div variants={{ fadeInUp }} className="space-y-4">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
                 Capture ideas,
-                <span className="block mt-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="block mt-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent pb-3">
                   organize life
                 </span>
               </h1>
@@ -65,13 +65,16 @@ export const HeroSection = () => {
             </motion.div>
 
             {/* CTA Buttons */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-              <Link href="/sign-up" prefetch>
+            <motion.div
+              variants={{ fadeInUp }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link href="/editor" prefetch>
                 <Button
                   size="lg"
                   className="gap-2 text-base px-8 h-12 bg-blue-600 hover:bg-blue-700"
                 >
-                  Get Started <ArrowRight className="h-4 w-4" />
+                  Try out the editor <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/sign-in" prefetch>
@@ -86,7 +89,7 @@ export const HeroSection = () => {
             </motion.div>
 
             {/* Features List */}
-            <motion.div variants={fadeInUp} className="pt-4">
+            <motion.div variants={{ fadeInUp }} className="pt-4">
               <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-neutral-600 dark:text-neutral-400">
                 {["Cloud sync", "Smart search", "Dark mode"].map((feature) => (
                   <div key={feature} className="flex items-center gap-2">
@@ -127,7 +130,7 @@ export const HeroSection = () => {
               transition={{ delay: 1, duration: 0.5 }}
             >
               <div className="flex items-center gap-2.5">
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <div className="h-2 w-2 rounded-full bg-green-500" />
                 <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                   Real-time sync active
                 </p>

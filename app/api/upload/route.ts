@@ -14,7 +14,7 @@ export async function POST(req: NextResponse) {
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
   try {
@@ -35,6 +35,15 @@ export async function POST(req: NextResponse) {
     });
     const uploadRequest = await s3.send(upload);
 
+    if (!uploadRequest) {
+      return NextResponse.json(
+        {
+          error: "Image upload failed",
+        },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json({
       message: "File uploaded",
       key: file.name,
@@ -47,7 +56,7 @@ export async function POST(req: NextResponse) {
         error: "Error uploading image",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

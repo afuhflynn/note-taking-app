@@ -35,21 +35,25 @@ export const SignInForm = () => {
 
   const onSubmit = async (values: SignInData) => {
     setLoading(true);
-    try {
-      // Handle form submission
-      const { error } = await signIn.email(values);
-      if (error) {
-        return toast.error(error.message);
-      }
 
-      toast.success("Sign In successful");
-      router.push("/notes");
-    } catch (error) {
-      console.error(error);
-      toast.error((error as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    // Handle form submission
+    await signIn.email({
+      ...values,
+      fetchOptions: {
+        onSuccess() {
+          toast.success("Sign In successful");
+          router.push("/notes");
+        },
+        onError(context) {
+          const error = context.error;
+          if (error) {
+            toast.error(error.message);
+          }
+        },
+      },
+    });
+
+    setLoading(false);
   };
 
   // TODO: Redirect the users to previous route after login if the route is not home page or any auth page.

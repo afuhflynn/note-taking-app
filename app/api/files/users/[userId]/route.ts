@@ -4,16 +4,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export async function GET() {
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ userId: string }> },
+) {
   const session = await auth.api.getSession({ headers: await headers() });
-
+  const { userId } = await params;
   if (!session) {
     return NextResponse.json(
       {
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
+    );
+  }
+
+  if (session.user.id !== userId) {
+    return NextResponse.json(
+      {
+        error: "Authentication required",
+        success: false,
+      },
+      { status: 401 },
     );
   }
 
@@ -35,7 +48,7 @@ export async function GET() {
         error: "Error fethcing images",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

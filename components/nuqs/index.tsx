@@ -4,7 +4,7 @@ export const searchParamsSchema = {
   tag: parseAsString,
   id: parseAsString,
   filter: parseAsString,
-  query: parseAsString,
+  query: parseAsString.withDefault(null),
 };
 
 type ParamsTypes = Values<{
@@ -18,7 +18,7 @@ type ParamsTypes = Values<{
 export const buildUrl = (
   href: string,
   overrides: Partial<typeof searchParamsSchema> = {},
-  params: ParamsTypes
+  params: ParamsTypes,
 ) => {
   const newParams = new URLSearchParams();
   const merged = { ...params, ...overrides };

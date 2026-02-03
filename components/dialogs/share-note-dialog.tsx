@@ -22,6 +22,7 @@ import {
 import { Share2, Copy, Check, Trash2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 interface ShareNoteDialogProps {
   noteId: string;
@@ -96,11 +97,17 @@ export function ShareNoteDialog({ noteId }: ShareNoteDialogProps) {
     createShare.mutate({ permission });
   };
 
+  useKeyboardShortcuts({
+    onShare() {
+      setOpen((prev) => !prev);
+    },
+  });
+
   const shares = sharesData?.shares || [];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-share-note-dialog-trigger>
         <Button variant="ghost" size="sm" className="gap-2">
           <Share2 className="h-4 w-4" />
           Share

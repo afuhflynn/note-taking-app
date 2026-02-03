@@ -13,14 +13,28 @@ import { useArchiveNote } from "@/hooks";
 import Image from "next/image";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
+import { useQueryStates } from "nuqs";
+import { searchParamsSchema } from "../nuqs";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 export const ArchiveNoteDialog = () => {
   const { currentNote } = useAppStore();
   const [open, onOpenChange] = useState(false);
-  const { arhiveNote } = useArchiveNote();
+  const [params, setParams] = useQueryStates(searchParamsSchema);
+  const { arhiveNote } = useArchiveNote({
+    filter: params.filter,
+    query: params.query,
+    tag: params.tag,
+  });
+
+  useKeyboardShortcuts({
+    onArchive() {
+      onOpenChange((prev) => !prev);
+    },
+  });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-archive-note-dialog-trigger>
         <Button
           variant={"outline"}
           size={"lg"}
@@ -48,7 +62,7 @@ export const ArchiveNoteDialog = () => {
 
       <DialogContent>
         <DialogHeader className="flex gap-6 flex-row items-start">
-          <div className="h-[40px] w-[40px] rounded-[8px] bg-muted flex items-center justify-center">
+          <div className=" rounded-[8px] p-2 bg-muted flex items-center justify-center">
             <Image
               src="/icons/Archive_Light.svg"
               alt="Arhive icon"
@@ -59,8 +73,8 @@ export const ArchiveNoteDialog = () => {
             <Image
               src="/icons/Archive_Dark.svg"
               alt="Arhive icon"
-              width={24}
-              height={24}
+              width={30}
+              height={30}
               className="hidden dark:block object-cover"
             />
           </div>
@@ -86,6 +100,7 @@ export const ArchiveNoteDialog = () => {
             onClick={() => {
               arhiveNote(currentNote?.id!);
               onOpenChange(false);
+              setParams({ ...params, id: null });
             }}
           >
             Archive Note

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
           error: "No notes found!",
           success: false,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
         error: "An unexpected error occurred getting notes.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
         error: "Authentication required",
         success: false,
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -152,12 +152,13 @@ export async function POST(request: NextRequest) {
           error: error[0]?.message || "Validation failed",
           success: false,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Process tags: split, trim, and filter empty strings
     const tagsArray = parseTags(validatedData.data.tags!);
+    console.log({ content: validatedData.data.content });
 
     const slug = generateSlug(validatedData.data.title.toLowerCase());
 
@@ -172,7 +173,7 @@ export async function POST(request: NextRequest) {
           error: "Note title already exists. Try again with another title.",
           success: false,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -187,10 +188,10 @@ export async function POST(request: NextRequest) {
           const tag = await tx.tag.upsert({
             where: { name: tagName },
             update: {}, // If tag exists, don't update anything
-            create: { name: tagName },
+            create: { name: tagName, userId: session.user.id },
           });
           return { tagId: tag.tagId };
-        })
+        }),
       );
 
       // Create note and connect to tags
@@ -239,7 +240,7 @@ export async function POST(request: NextRequest) {
           error: "A note with this title already exists.",
           success: false,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -248,7 +249,7 @@ export async function POST(request: NextRequest) {
         error: "An unexpected error occurred creating note.",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

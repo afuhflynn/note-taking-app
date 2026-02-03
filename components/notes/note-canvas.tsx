@@ -30,7 +30,7 @@ export const NoteCanvas = () => {
   return (
     <div className="w-[588px] h-full flex-1 border-left padding !py-0 !pt-11 flex flex-col items-center justify-between">
       {/* Note header (details) */}
-      <NoteHeader noteId={currentNoteId as string} />
+      <NoteHeader />
       <div className="w-full flex-1 max-h-[calc(100% - 142.15px)] overflow-auto flex flex-col relative">
         {/* Search highlight indicator */}
         <SearchHighlightIndicator content={newNote?.content || note?.content} />
